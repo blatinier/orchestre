@@ -1,0 +1,126 @@
+{
+  "morceaux": [
+    {
+      "titre": "Americal patrol",
+      "instruments": {
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Americal patrol, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Bohemian Rhapsody",
+      "instruments": {
+        "violon1": "partitions/Nord Deux Sèvres/Violon 1/Bohemian Rhapsody, violon 1.pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Bohemian Rhapsody, violoncelle.pdf",
+        "violon2": "partitions/Nord Deux Sèvres/Violon 2/Bohemian Rhapsody, violon 2.pdf",
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Bohemian Rhapsody, violon 3.pdf",
+        "violoncelle2": "partitions/Nord Deux Sèvres/Violoncelle 2/Bohemian Rhapsody, violoncelle 2.pdf"
+      }
+    },
+    {
+      "titre": "Canon de Pachelbel",
+      "instruments": {
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Canon de Pachelbel, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Coldlay classics",
+      "instruments": {
+        "violon1": "partitions/Nord Deux Sèvres/Violon 1/coldlay classics, violon 1.pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/coldlay classics, violoncelle.pdf",
+        "violon2": "partitions/Nord Deux Sèvres/Violon 2/coldlay classics, violon 2.pdf",
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/coldlay classics, violon 3.pdf",
+        "violoncelle2": "partitions/Nord Deux Sèvres/Violoncelle 2/coldlay classics, violoncelle 2.pdf"
+      }
+    },
+    {
+      "titre": "German Dance",
+      "instruments": {
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/German Dance, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Highlights from harry Potter",
+      "instruments": {
+        "violon1": "partitions/Nord Deux Sèvres/Violon 1/Highlights from harry Potter, violon 1.pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Highlights from harry Potter, violoncelle.pdf",
+        "violon2": "partitions/Nord Deux Sèvres/Violon 2/Highlights from harry Potter, violon 2.pdf",
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Highlights from harry Potter, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "La surprise, haydn",
+      "instruments": {
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/La surprise, haydn, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Mendelssohn-Schumann",
+      "instruments": {
+        "violon1": "partitions/Nord Deux Sèvres/Violon 1/Mendelssohn-Schumann violon 1.pdf",
+        "violon2": "partitions/Nord Deux Sèvres/Violon 2/Mendelssohn-Schumann violon 2.pdf",
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Mendelssohn-Schumann violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Mendelssohn-Schumann violoncelle",
+      "instruments": {
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Mendelssohn-Schumann violoncelle, basse.pdf"
+      }
+    },
+    {
+      "titre": "Mission impossible",
+      "instruments": {
+        "violon1": "partitions/Nord Deux Sèvres/Violon 1/Mission impossible, violon 1.pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Mission impossible, violoncelle.pdf",
+        "violon2": "partitions/Nord Deux Sèvres/Violon 2/Mission impossible, violon 2.pdf",
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Mission impossible, violon 3.pdf",
+        "violoncelle2": "partitions/Nord Deux Sèvres/Violoncelle 2/Mission impossible, violoncelle 2.pdf"
+      }
+    },
+    {
+      "titre": "Morceaux de Schubert",
+      "instruments": {
+        "violon1": "partitions/Nord Deux Sèvres/Violon 1/Morceaux de Schubert,violon1.pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/morceaux de Schubert, cello.pdf",
+        "violon2": "partitions/Nord Deux Sèvres/Violon 2/morceaux de Schubert, violon 2.pdf",
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/morceaux de Schubert, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Pirates des Caraïbes",
+      "instruments": {
+        "violon1": "partitions/Nord Deux Sèvres/Violon 1/pirates des Caraïbes, violon 1.pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/pirates des Caraïbes, violoncelle.pdf",
+        "violon2": "partitions/Nord Deux Sèvres/Violon 2/pirates des Caraïbes, violon 2.pdf",
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Pirates des Caraïbes, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Purcell, With drooping wings",
+      "instruments": {
+        "violon1": "partitions/Nord Deux Sèvres/Violon 1/Purcell, With drooping wings.pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Purcell, With drooping wings.pdf",
+        "violon2": "partitions/Nord Deux Sèvres/Violon 2/Purcell, With drooping wings.pdf",
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Purcell, With drooping wings, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Raindrops",
+      "instruments": {
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Raindrops, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Suite en sol, Purcell",
+      "instruments": {
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Suite en sol, Purcell, violon 3.pdf"
+      }
+    },
+    {
+      "titre": "Volontary and march",
+      "instruments": {
+        "violon3": "partitions/Nord Deux Sèvres/Violon 3/Volontary and march, violon 3.pdf"
+      }
+    }
+  ]
+}

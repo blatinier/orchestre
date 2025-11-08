@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orchestre à Cordes - Partitions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Orchestre à Cordes</h1>
+            <p class="subtitle">Bibliothèque de Partitions</p>
+        </header>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Rechercher un morceau...">
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-instrument="all">Tous</button>
+                <button class="filter-btn" data-instrument="violon1">Violon 1</button>
+                <button class="filter-btn" data-instrument="violon2">Violon 2</button>
+                <button class="filter-btn" data-instrument="violon3">Violon 3</button>
+                <button class="filter-btn" data-instrument="violoncelle1">Violoncelle 1</button>
+                <button class="filter-btn" data-instrument="violoncelle2">Violoncelle 2</button>
+            </div>
+        </div>
+
+        <div id="pieceCount" class="piece-count"></div>
+
+        <div id="piecesList" class="pieces-list">
+            <!-- Pieces will be loaded here by JavaScript -->
+        </div>
+
+        <footer>
+            <p>Orchestre à Cordes - Nord Deux Sèvres</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
