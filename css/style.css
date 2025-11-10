@@ -189,7 +189,7 @@ h1 {
 }
 
 .piece-card {
-    background: linear-gradient(135deg, #fffef7 0%, #fff5e6 100%);
+    background: white;
     border: 3px solid #fdcb6e;
     border-radius: 15px;
     padding: 25px;
@@ -198,8 +198,8 @@ h1 {
 }
 
 .piece-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(225, 112, 85, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     border-color: #e17055;
 }
 
@@ -250,14 +250,14 @@ h1 {
 .download-button {
     display: inline-block;
     padding: 15px 30px;
-    background: linear-gradient(135deg, #e17055, #fd79a8);
+    background: #e17055;
     color: white;
     border-radius: 50px;
     text-decoration: none;
     font-size: 1.2rem;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 20px rgba(225, 112, 85, 0.3);
+    box-shadow: 0 4px 15px rgba(225, 112, 85, 0.3);
     border: none;
     cursor: pointer;
     flex: 1;
@@ -265,28 +265,30 @@ h1 {
 }
 
 .download-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(225, 112, 85, 0.5);
+    background: #d35d48;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(225, 112, 85, 0.4);
 }
 
 .share-button {
     display: inline-block;
     padding: 15px 30px;
-    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    background: #2d3436;
     color: white;
     border-radius: 50px;
     font-size: 1.2rem;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 5px 20px rgba(9, 132, 227, 0.3);
+    box-shadow: 0 4px 15px rgba(45, 52, 54, 0.3);
     border: none;
     cursor: pointer;
     font-family: 'Crimson Text', serif;
 }
 
 .share-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(9, 132, 227, 0.5);
+    background: #1a1d1f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 52, 54, 0.4);
 }
 
 .piece-header-with-share {
@@ -301,20 +303,21 @@ h1 {
 
 .share-button-small {
     padding: 8px 16px;
-    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    background: #2d3436;
     color: white;
     border-radius: 50%;
     font-size: 1.2rem;
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 3px 10px rgba(9, 132, 227, 0.3);
+    box-shadow: 0 3px 10px rgba(45, 52, 54, 0.3);
     flex-shrink: 0;
 }
 
 .share-button-small:hover {
+    background: #1a1d1f;
     transform: scale(1.1);
-    box-shadow: 0 5px 15px rgba(9, 132, 227, 0.5);
+    box-shadow: 0 5px 15px rgba(45, 52, 54, 0.4);
 }
 
 .instruments-grid {
