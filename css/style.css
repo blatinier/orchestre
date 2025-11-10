@@ -52,6 +52,55 @@ h1 {
     margin-bottom: 40px;
 }
 
+/* Instrument Selector */
+.instrument-selector {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.instrument-selector label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #e17055;
+}
+
+#myInstrument {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    font-family: 'Crimson Text', serif;
+    border: 3px solid #fdcb6e;
+    border-radius: 50px;
+    background: white;
+    color: #e17055;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+#myInstrument:focus {
+    border-color: #e17055;
+    box-shadow: 0 0 20px rgba(225, 112, 85, 0.3);
+}
+
+.remember-choice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: #636e72;
+    cursor: pointer;
+}
+
+#rememberInstrument {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
 .search-box {
     position: relative;
     margin-bottom: 25px;
@@ -154,14 +203,60 @@ h1 {
     border-color: #e17055;
 }
 
+.piece-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #fdcb6e;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
 .piece-title {
     font-family: 'Cormorant Garamond', serif;
     font-size: 2rem;
     font-weight: 600;
     color: #e17055;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #fdcb6e;
+    margin: 0;
+}
+
+.instrument-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.instrument-badge-inline {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.download-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #e17055, #fd79a8);
+    color: white;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(225, 112, 85, 0.3);
+}
+
+.download-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(225, 112, 85, 0.5);
 }
 
 .instruments-grid {
@@ -259,6 +354,15 @@ footer {
         font-size: 1.2rem;
     }
 
+    .instrument-selector {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #myInstrument {
+        width: 100%;
+    }
+
     .filters {
         gap: 10px;
     }
@@ -268,12 +372,22 @@ footer {
         font-size: 1rem;
     }
 
+    .piece-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     .piece-title {
         font-size: 1.6rem;
     }
 
     .instruments-grid {
         grid-template-columns: 1fr;
+    }
+
+    .download-button {
+        width: 100%;
+        text-align: center;
     }
 }
 

@@ -17,18 +17,25 @@
         </header>
 
         <div class="controls">
+            <div class="instrument-selector">
+                <label for="myInstrument">Mon instrument :</label>
+                <select id="myInstrument">
+                    <option value="all">Tous les instruments</option>
+                    <option value="violon1">Violon 1</option>
+                    <option value="violon2">Violon 2</option>
+                    <option value="violon3">Violon 3</option>
+                    <option value="violoncelle1">Violoncelle 1</option>
+                    <option value="violoncelle2">Violoncelle 2</option>
+                </select>
+                <label class="remember-choice">
+                    <input type="checkbox" id="rememberInstrument">
+                    <span>Se souvenir de mon choix</span>
+                </label>
+            </div>
+
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Rechercher un morceau...">
                 <span class="search-icon">🔍</span>
-            </div>
-
-            <div class="filters">
-                <button class="filter-btn active" data-instrument="all">Tous</button>
-                <button class="filter-btn" data-instrument="violon1">Violon 1</button>
-                <button class="filter-btn" data-instrument="violon2">Violon 2</button>
-                <button class="filter-btn" data-instrument="violon3">Violon 3</button>
-                <button class="filter-btn" data-instrument="violoncelle1">Violoncelle 1</button>
-                <button class="filter-btn" data-instrument="violoncelle2">Violoncelle 2</button>
             </div>
         </div>
 

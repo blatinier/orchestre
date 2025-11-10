@@ -12,6 +12,18 @@ const instrumentNames = {
     'violoncelle2': 'Violoncelle 2'
 };
 
+// Instrument colors for badges
+const instrumentColors = {
+    'violon1': '#e74c3c',
+    'violon2': '#e67e22',
+    'violon3': '#f39c12',
+    'violoncelle1': '#3498db',
+    'violoncelle2': '#9b59b6'
+};
+
+// LocalStorage key
+const STORAGE_KEY = 'orchestre_instrument_preference';
+
 // Load partitions data
 async function loadPartitions() {
     try {
@@ -46,12 +58,36 @@ function displayPieces() {
 
 // Create a piece card
 function createPieceCard(piece) {
+    // If a specific instrument is selected, show only that instrument's download
+    if (currentFilter !== 'all' && piece.instruments[currentFilter]) {
+        const path = piece.instruments[currentFilter];
+        const color = instrumentColors[currentFilter];
+        return `
+            <div class="piece-card">
+                <div class="piece-header">
+                    <h2 class="piece-title">${piece.titre}</h2>
+                    <span class="instrument-badge" style="background-color: ${color};">
+                        ${instrumentNames[currentFilter]}
+                    </span>
+                </div>
+                <a href="${path}" class="download-button" target="_blank" rel="noopener noreferrer">
+                    📄 Télécharger la partition
+                </a>
+            </div>
+        `;
+    }
+
+    // Otherwise, show all available instruments with color badges
     const instrumentsHTML = Object.entries(piece.instruments)
-        .map(([instrument, path]) => `
-            <a href="${path}" class="instrument-link" target="_blank" rel="noopener noreferrer">
-                ${instrumentNames[instrument] || instrument}
-            </a>
-        `)
+        .map(([instrument, path]) => {
+            const color = instrumentColors[instrument];
+            return `
+                <a href="${path}" class="instrument-link" target="_blank" rel="noopener noreferrer" style="border-color: ${color}; color: ${color};">
+                    <span class="instrument-badge-inline" style="background-color: ${color};"></span>
+                    ${instrumentNames[instrument] || instrument}
+                </a>
+            `;
+        })
         .join('');
 
     return `
@@ -103,25 +139,51 @@ function showError() {
     `;
 }
 
+// Load saved instrument preference
+function loadInstrumentPreference() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+        try {
+            const { instrument, remember } = JSON.parse(saved);
+            if (remember) {
+                currentFilter = instrument;
+                const select = document.getElementById('myInstrument');
+                const checkbox = document.getElementById('rememberInstrument');
+                if (select) select.value = instrument;
+                if (checkbox) checkbox.checked = true;
+                return true;
+            }
+        } catch (e) {
+            console.error('Error loading preference:', e);
+        }
+    }
+    return false;
+}
+
+// Save instrument preference
+function saveInstrumentPreference(instrument, remember) {
+    if (remember) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ instrument, remember }));
+    } else {
+        localStorage.removeItem(STORAGE_KEY);
+    }
+}
+
 // Setup event listeners
 function setupEventListeners() {
-    // Filter buttons
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Remove active class from all buttons
-            filterButtons.forEach(btn => btn.classList.remove('active'));
+    // Instrument selector
+    const instrumentSelect = document.getElementById('myInstrument');
+    const rememberCheckbox = document.getElementById('rememberInstrument');
 
-            // Add active class to clicked button
-            button.classList.add('active');
+    instrumentSelect.addEventListener('change', (e) => {
+        currentFilter = e.target.value;
+        saveInstrumentPreference(currentFilter, rememberCheckbox.checked);
+        displayPieces();
+        updatePieceCount();
+    });
 
-            // Update current filter
-            currentFilter = button.dataset.instrument;
-
-            // Update display
-            displayPieces();
-            updatePieceCount();
-        });
+    rememberCheckbox.addEventListener('change', (e) => {
+        saveInstrumentPreference(currentFilter, e.target.checked);
     });
 
     // Search input
@@ -145,6 +207,7 @@ function setupEventListeners() {
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
+    loadInstrumentPreference();
     setupEventListeners();
     loadPartitions();
 });
