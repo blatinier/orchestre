@@ -241,6 +241,12 @@ h1 {
     margin-right: 8px;
 }
 
+.piece-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
 .download-button {
     display: inline-block;
     padding: 15px 30px;
@@ -252,11 +258,63 @@ h1 {
     font-weight: 600;
     transition: all 0.3s ease;
     box-shadow: 0 5px 20px rgba(225, 112, 85, 0.3);
+    border: none;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
 }
 
 .download-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 30px rgba(225, 112, 85, 0.5);
+}
+
+.share-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 20px rgba(9, 132, 227, 0.3);
+    border: none;
+    cursor: pointer;
+    font-family: 'Crimson Text', serif;
+}
+
+.share-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(9, 132, 227, 0.5);
+}
+
+.piece-header-with-share {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #fdcb6e;
+    gap: 15px;
+}
+
+.share-button-small {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(9, 132, 227, 0.3);
+    flex-shrink: 0;
+}
+
+.share-button-small:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(9, 132, 227, 0.5);
 }
 
 .instruments-grid {
@@ -385,7 +443,12 @@ footer {
         grid-template-columns: 1fr;
     }
 
-    .download-button {
+    .piece-actions {
+        flex-direction: column;
+    }
+
+    .download-button,
+    .share-button {
         width: 100%;
         text-align: center;
     }

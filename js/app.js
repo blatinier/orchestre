@@ -56,6 +56,35 @@ function displayPieces() {
     piecesList.innerHTML = filteredPieces.map(piece => createPieceCard(piece)).join('');
 }
 
+// Share a piece
+function sharePiece(titre, instrument) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('morceau', titre);
+    if (instrument && instrument !== 'all') {
+        url.searchParams.set('instrument', instrument);
+    }
+
+    const shareUrl = url.toString();
+
+    // Use Web Share API if available, otherwise copy to clipboard
+    if (navigator.share) {
+        navigator.share({
+            title: `${titre} - ${instrument !== 'all' ? instrumentNames[instrument] : 'Orchestre à Cordes'}`,
+            text: `Partition : ${titre}`,
+            url: shareUrl
+        }).catch(err => console.log('Erreur lors du partage:', err));
+    } else {
+        // Fallback: copy to clipboard
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            alert('Lien copié dans le presse-papier !');
+        }).catch(err => {
+            console.error('Erreur lors de la copie:', err);
+            // Final fallback: show the URL
+            prompt('Copiez ce lien:', shareUrl);
+        });
+    }
+}
+
 // Create a piece card
 function createPieceCard(piece) {
     // If a specific instrument is selected, show only that instrument's download
@@ -70,9 +99,14 @@ function createPieceCard(piece) {
                         ${instrumentNames[currentFilter]}
                     </span>
                 </div>
-                <a href="${path}" class="download-button" target="_blank" rel="noopener noreferrer">
-                    📄 Télécharger la partition
-                </a>
+                <div class="piece-actions">
+                    <a href="${path}" class="download-button" target="_blank" rel="noopener noreferrer">
+                        📄 Télécharger la partition
+                    </a>
+                    <button class="share-button" onclick="sharePiece('${piece.titre.replace(/'/g, "\\'")}', '${currentFilter}')">
+                        🔗 Partager
+                    </button>
+                </div>
             </div>
         `;
     }
@@ -92,7 +126,12 @@ function createPieceCard(piece) {
 
     return `
         <div class="piece-card">
-            <h2 class="piece-title">${piece.titre}</h2>
+            <div class="piece-header-with-share">
+                <h2 class="piece-title">${piece.titre}</h2>
+                <button class="share-button-small" onclick="sharePiece('${piece.titre.replace(/'/g, "\\'")}', 'all')">
+                    🔗
+                </button>
+            </div>
             <div class="instruments-grid">
                 ${instrumentsHTML}
             </div>
@@ -205,8 +244,28 @@ function setupEventListeners() {
     });
 }
 
+// Handle URL parameters for sharing
+function handleSharedLink() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const morceau = urlParams.get('morceau');
+    const instrument = urlParams.get('instrument');
+
+    if (instrument) {
+        currentFilter = instrument;
+        const select = document.getElementById('myInstrument');
+        if (select) select.value = instrument;
+    }
+
+    if (morceau) {
+        currentSearchTerm = morceau;
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) searchInput.value = morceau;
+    }
+}
+
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
+    handleSharedLink();
     loadInstrumentPreference();
     setupEventListeners();
     loadPartitions();
