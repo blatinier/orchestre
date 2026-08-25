@@ -101,6 +101,35 @@ h1 {
     cursor: pointer;
 }
 
+/* Year Filter */
+.year-filter {
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.year-filter[hidden] {
+    display: none;
+}
+
+.year-filter label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #e17055;
+}
+
+.year-filter .filters {
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.year-filter .filter-btn {
+    padding: 8px 20px;
+    font-size: 1rem;
+}
+
 .search-box {
     position: relative;
     margin-bottom: 25px;
@@ -231,6 +260,25 @@ h1 {
     font-weight: 600;
     white-space: nowrap;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.piece-years {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.year-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    background: #fff5e6;
+    border: 1px solid #fdcb6e;
+    color: #b3541e;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
 }
 
 .instrument-badge-inline {
@@ -415,7 +463,8 @@ footer {
         font-size: 1.2rem;
     }
 
-    .instrument-selector {
+    .instrument-selector,
+    .year-filter {
         flex-direction: column;
         align-items: flex-start;
     }
@@ -426,6 +475,10 @@ footer {
 
     .filters {
         gap: 10px;
+    }
+
+    .year-filter .filters {
+        width: 100%;
     }
 
     .filter-btn {
@@ -472,6 +525,14 @@ footer {
 
     .filter-btn {
         width: 100%;
+    }
+
+    .year-filter .filters {
+        flex-direction: row;
+    }
+
+    .year-filter .filter-btn {
+        width: auto;
     }
 }
 

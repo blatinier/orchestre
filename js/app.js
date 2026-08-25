@@ -2,6 +2,7 @@
 let allPieces = [];
 let currentFilter = 'all';
 let currentSearchTerm = '';
+let currentYear = 'all';
 
 // Instrument name mapping
 const instrumentNames = {
@@ -30,12 +31,47 @@ async function loadPartitions() {
         const response = await fetch('partitions.json');
         const data = await response.json();
         allPieces = data.morceaux;
+        buildYearFilter();
         displayPieces();
         updatePieceCount();
     } catch (error) {
         console.error('Error loading partitions:', error);
         showError();
     }
+}
+
+// Collect every year present in the data, most recent first
+function getAvailableYears() {
+    const years = new Set();
+    allPieces.forEach(piece => {
+        (piece.annees || []).forEach(annee => years.add(annee));
+    });
+    return Array.from(years).sort((a, b) => b - a);
+}
+
+// Build the year filter row (hidden when no piece has a year yet)
+function buildYearFilter() {
+    const wrapper = document.getElementById('yearFilter');
+    const buttons = document.getElementById('yearButtons');
+    const years = getAvailableYears();
+
+    // A shared link may point at a year nobody plays anymore
+    if (currentYear !== 'all' && !years.includes(currentYear)) {
+        currentYear = 'all';
+    }
+
+    if (years.length === 0) {
+        wrapper.hidden = true;
+        return;
+    }
+
+    wrapper.hidden = false;
+    buttons.innerHTML = [
+        `<button class="filter-btn${currentYear === 'all' ? ' active' : ''}" data-year="all">Toutes</button>`,
+        ...years.map(annee =>
+            `<button class="filter-btn${currentYear === annee ? ' active' : ''}" data-year="${annee}">${annee}</button>`
+        )
+    ].join('');
 }
 
 // Display pieces
@@ -63,6 +99,9 @@ function sharePiece(titre, instrument) {
     if (instrument && instrument !== 'all') {
         url.searchParams.set('instrument', instrument);
     }
+    if (currentYear !== 'all') {
+        url.searchParams.set('annee', currentYear);
+    }
 
     const shareUrl = url.toString();
 
@@ -85,6 +124,21 @@ function sharePiece(titre, instrument) {
     }
 }
 
+// Render the years a piece is played, oldest first
+function createYearBadges(piece) {
+    const annees = piece.annees || [];
+    if (annees.length === 0) {
+        return '';
+    }
+
+    const badges = [...annees]
+        .sort((a, b) => a - b)
+        .map(annee => `<span class="year-badge">${annee}</span>`)
+        .join('');
+
+    return `<div class="piece-years">${badges}</div>`;
+}
+
 // Create a piece card
 function createPieceCard(piece) {
     // If a specific instrument is selected, show only that instrument's download
@@ -99,6 +153,7 @@ function createPieceCard(piece) {
                         ${instrumentNames[currentFilter]}
                     </span>
                 </div>
+                ${createYearBadges(piece)}
                 <div class="piece-actions">
                     <a href="${path}" class="download-button" target="_blank" rel="noopener noreferrer">
                         📄 Télécharger la partition
@@ -132,6 +187,7 @@ function createPieceCard(piece) {
                     🔗
                 </button>
             </div>
+            ${createYearBadges(piece)}
             <div class="instruments-grid">
                 ${instrumentsHTML}
             </div>
@@ -146,11 +202,15 @@ function filterPieces() {
         const instrumentMatch = currentFilter === 'all' ||
                                piece.instruments.hasOwnProperty(currentFilter);
 
+        // Filter by year played
+        const yearMatch = currentYear === 'all' ||
+                          (piece.annees || []).includes(currentYear);
+
         // Filter by search term
         const searchMatch = currentSearchTerm === '' ||
                            piece.titre.toLowerCase().includes(currentSearchTerm.toLowerCase());
 
-        return instrumentMatch && searchMatch;
+        return instrumentMatch && yearMatch && searchMatch;
     });
 }
 
@@ -160,7 +220,7 @@ function updatePieceCount() {
     const filteredCount = filterPieces().length;
     const totalCount = allPieces.length;
 
-    if (currentFilter === 'all' && currentSearchTerm === '') {
+    if (currentFilter === 'all' && currentSearchTerm === '' && currentYear === 'all') {
         pieceCount.textContent = `${totalCount} morceau${totalCount > 1 ? 'x' : ''} disponible${totalCount > 1 ? 's' : ''}`;
     } else {
         pieceCount.textContent = `${filteredCount} morceau${filteredCount > 1 ? 'x' : ''} trouvé${filteredCount > 1 ? 's' : ''} sur ${totalCount}`;
@@ -225,6 +285,19 @@ function setupEventListeners() {
         saveInstrumentPreference(currentFilter, e.target.checked);
     });
 
+    // Year filter buttons
+    const yearButtons = document.getElementById('yearButtons');
+    yearButtons.addEventListener('click', (e) => {
+        const button = e.target.closest('.filter-btn');
+        if (!button) return;
+
+        currentYear = button.dataset.year === 'all' ? 'all' : Number(button.dataset.year);
+        yearButtons.querySelectorAll('.filter-btn')
+            .forEach(other => other.classList.toggle('active', other === button));
+        displayPieces();
+        updatePieceCount();
+    });
+
     // Search input
     const searchInput = document.getElementById('searchInput');
     searchInput.addEventListener('input', (e) => {
@@ -249,6 +322,11 @@ function handleSharedLink() {
     const urlParams = new URLSearchParams(window.location.search);
     const morceau = urlParams.get('morceau');
     const instrument = urlParams.get('instrument');
+    const annee = Number(urlParams.get('annee'));
+
+    if (Number.isInteger(annee) && annee > 0) {
+        currentYear = annee;
+    }
 
     if (instrument) {
         currentFilter = instrument;

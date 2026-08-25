@@ -31,7 +31,8 @@ Ouvrez simplement le fichier `index.html` dans votre navigateur web.
 
 1. **Recherche** : Utilisez la barre de recherche pour trouver un morceau par son titre
 2. **Filtres** : Cliquez sur un instrument pour voir uniquement les morceaux disponibles pour cet instrument
-3. **Téléchargement** : Cliquez sur le bouton d'un instrument pour télécharger la partition PDF
+3. **Filtre par année** : Cliquez sur une année pour ne voir que le répertoire joué cette année-là
+4. **Téléchargement** : Cliquez sur le bouton d'un instrument pour télécharger la partition PDF
 
 ### Ajouter de nouvelles partitions
 
@@ -44,6 +45,37 @@ python3 generate_json.py
 ```
 
 3. Rechargez la page dans votre navigateur
+
+### Renseigner les années de jeu
+
+Les années où un morceau est joué ne peuvent pas être déduites des fichiers PDF :
+elles sont saisies à la main dans `partitions.json`, via un champ optionnel `annees`.
+
+```json
+{
+  "titre": "Volontary and march",
+  "annees": [2024, 2025, 2026],
+  "instruments": {
+    "violon3": "partitions/Nord Deux Sèvres/Violon 3/Volontary and march, violon 3.pdf"
+  }
+}
+```
+
+- Un morceau joué une seule fois n'a qu'une année : `"annees": [2024]`
+- Un morceau sans champ `annees` n'apparaît que sous « Toutes les années »
+- Les boutons d'années du site sont générés à partir des années présentes dans
+  le fichier : la ligne de filtres disparaît si aucun morceau n'a d'année
+
+`generate_json.py` relit le `partitions.json` existant et **reporte les années**
+à chaque régénération, donc ajouter des PDF ne les efface pas. Si un morceau est
+renommé ou supprimé, le script prévient que ses années ont été perdues :
+
+```
+⚠ Years dropped - these titles no longer exist (renamed or removed PDF?):
+    - Ancien titre: [2024, 2025]
+```
+
+Dans ce cas, remettez les années sur le nouveau titre à la main.
 
 ## Caractéristiques du design
 

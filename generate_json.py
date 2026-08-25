@@ -12,9 +12,45 @@ import json
 import re
 from pathlib import Path
 
+def load_existing_annees(output_path):
+    """Read the years already recorded in partitions.json.
+
+    Years are added by hand and cannot be derived from the PDF files, so they
+    must be carried over every time this script regenerates the JSON.
+    """
+    if not output_path.exists():
+        return {}
+
+    try:
+        with open(output_path, encoding='utf-8') as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"⚠ Could not read {output_path.name} ({e}) - years would be lost, aborting")
+        raise
+
+    return {
+        piece['titre']: piece['annees']
+        for piece in data.get('morceaux', [])
+        if piece.get('annees')
+    }
+
+
+def compact_annees(json_text):
+    """Keep each years array on a single line so the file stays easy to hand-edit."""
+    def collapse(match):
+        years = re.findall(r'\d+', match.group(1))
+        return '"annees": [' + ', '.join(years) + ']'
+
+    return re.sub(r'"annees": \[([^\]]*)\]', collapse, json_text)
+
+
 def generate_partitions_json():
     # Base directory
     base_dir = Path(__file__).parent / 'partitions'
+    output_path = Path(__file__).parent / 'partitions.json'
+
+    # Hand-written years, preserved across regenerations
+    existing_annees = load_existing_annees(output_path)
 
     if not base_dir.exists():
         print(f"Error: Directory {base_dir} does not exist")
@@ -74,18 +110,26 @@ def generate_partitions_json():
     # Convert to JSON format
     morceaux = []
     for titre, instruments in sorted(pieces.items()):
-        morceaux.append({
-            'titre': titre,
-            'instruments': instruments
-        })
+        piece = {'titre': titre}
+        if titre in existing_annees:
+            piece['annees'] = existing_annees[titre]
+        piece['instruments'] = instruments
+        morceaux.append(piece)
+
+    # Never drop years silently: a renamed or removed PDF loses its title
+    orphans = sorted(set(existing_annees) - set(pieces))
+    if orphans:
+        print("⚠ Years dropped - these titles no longer exist (renamed or removed PDF?):")
+        for titre in orphans:
+            print(f"    - {titre}: {existing_annees[titre]}")
+        print()
 
     # Create JSON structure
     data = {'morceaux': morceaux}
 
     # Write to file
-    output_path = Path(__file__).parent / 'partitions.json'
     with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write(compact_annees(json.dumps(data, ensure_ascii=False, indent=2)) + '\n')
 
     print(f"✓ Created {output_path}")
     print(f"✓ Found {len(morceaux)} pieces")
