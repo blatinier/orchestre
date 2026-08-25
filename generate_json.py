@@ -44,6 +44,66 @@ def compact_annees(json_text):
     return re.sub(r'"annees": \[([^\]]*)\]', collapse, json_text)
 
 
+# One PDF per part, filed in the instrument's folder
+INSTRUMENT_FOLDERS = {
+    'Violon 1': 'violon1',
+    'Violon 2': 'violon2',
+    'Violon 3': 'violon3',
+    'Violoncelle 1': 'violoncelle1',
+    'Violoncelle 2': 'violoncelle2',
+}
+
+# Combined scores hold several parts in a single PDF and sit outside the
+# instrument folders. The parts they contain are listed in the filename:
+# "V1-V2-Vcelle - Titre.pdf"
+INSTRUMENT_CODES = {
+    'V1': 'violon1',
+    'V2': 'violon2',
+    'V3': 'violon3',
+    'VCELLE': 'violoncelle1',
+    'VCELLE1': 'violoncelle1',
+    'VCELLE2': 'violoncelle2',
+}
+
+
+def normalize_part_name(stem):
+    """Derive the piece title from a single-part filename.
+
+    The instrument is spelled out at the end of the name and has to go, so that
+    every part of a piece lands under the same title.
+    """
+    titre = re.sub(r',?\s*(violon|violoncelle|cello|basse)\s*\d*\.?$', '', stem, flags=re.IGNORECASE)
+    titre = re.sub(r',?\s*violon\s+\d+$', '', titre, flags=re.IGNORECASE)
+    return titre.strip(', ')
+
+
+def parse_combined_score(stem):
+    """Read the parts of a combined score named "V1-V2-Vcelle - Titre".
+
+    Returns (instrument_keys, titre), or None when the name does not follow the
+    convention - the caller then reports the file instead of dropping it
+    silently.
+    """
+    if ' - ' not in stem:
+        return None
+
+    prefix, titre = stem.split(' - ', 1)
+
+    keys = []
+    for code in prefix.split('-'):
+        key = INSTRUMENT_CODES.get(code.strip().upper())
+        if key is None:
+            return None
+        if key not in keys:
+            keys.append(key)
+
+    titre = titre.strip(', ')
+    if not keys or not titre:
+        return None
+
+    return keys, titre
+
+
 def generate_partitions_json():
     # Base directory
     base_dir = Path(__file__).parent / 'partitions'
@@ -61,42 +121,30 @@ def generate_partitions_json():
 
     # Dictionary to store pieces
     pieces = {}
+    ignored = []
 
     # Process each PDF
     for pdf_path in pdf_files:
-        filename = pdf_path.name
         parent_dir = pdf_path.parent.name
 
-        # Skip files in root directory (combined scores)
-        if parent_dir in ['partitions', 'Nord Deux Sèvres']:
+        if parent_dir in INSTRUMENT_FOLDERS:
+            # One part, one instrument, named after it
+            instrument_keys = [INSTRUMENT_FOLDERS[parent_dir]]
+            piece_name = normalize_part_name(pdf_path.stem)
+        else:
+            # Outside the instrument folders: expect a combined score
+            combined = parse_combined_score(pdf_path.stem)
+            if combined is None:
+                ignored.append(pdf_path.relative_to(base_dir))
+                continue
+            instrument_keys, piece_name = combined
+
+        if not piece_name:
+            ignored.append(pdf_path.relative_to(base_dir))
             continue
-
-        # Map folder names to instrument keys
-        instrument_map = {
-            'Violon 1': 'violon1',
-            'Violon 2': 'violon2',
-            'Violon 3': 'violon3',
-            'Violoncelle 1': 'violoncelle1',
-            'Violoncelle 2': 'violoncelle2'
-        }
-
-        if parent_dir not in instrument_map:
-            continue
-
-        instrument_key = instrument_map[parent_dir]
-
-        # Extract piece name from filename
-        # Remove instrument-specific parts from the name
-        piece_name = filename.replace('.pdf', '')
-
-        # Normalize the piece name by removing instrument indicators
-        piece_name = re.sub(r',?\s*(violon|violoncelle|cello|basse)\s*\d*\.?$', '', piece_name, flags=re.IGNORECASE)
-        piece_name = re.sub(r',?\s*violon\s+\d+$', '', piece_name, flags=re.IGNORECASE)
-        piece_name = piece_name.strip(', ')
 
         # Capitalize first letter
-        if piece_name:
-            piece_name = piece_name[0].upper() + piece_name[1:]
+        piece_name = piece_name[0].upper() + piece_name[1:]
 
         # Get relative path from orchestre directory
         rel_path = pdf_path.relative_to(Path(__file__).parent)
@@ -105,7 +153,8 @@ def generate_partitions_json():
         if piece_name not in pieces:
             pieces[piece_name] = {}
 
-        pieces[piece_name][instrument_key] = str(rel_path).replace('\\', '/')
+        for instrument_key in instrument_keys:
+            pieces[piece_name][instrument_key] = str(rel_path).replace('\\', '/')
 
     # Convert to JSON format
     morceaux = []
@@ -115,6 +164,15 @@ def generate_partitions_json():
             piece['annees'] = existing_annees[titre]
         piece['instruments'] = instruments
         morceaux.append(piece)
+
+    # Never drop a PDF silently: outside the instrument folders a file only
+    # counts if its name lists the parts it holds ("V1-V2-Vcelle - Titre.pdf")
+    if ignored:
+        print("⚠ PDF ignored - no instrument found (wrong folder, or missing")
+        print("  \"V1-V2-Vcelle - \" prefix for a combined score):")
+        for rel in sorted(ignored, key=str):
+            print(f"    - {rel}")
+        print()
 
     # Never drop years silently: a renamed or removed PDF loses its title
     orphans = sorted(set(existing_annees) - set(pieces))

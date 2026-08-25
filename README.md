@@ -14,6 +14,7 @@ orchestre/
 │   └── app.js             # Logique JavaScript
 └── partitions/            # Dossier contenant tous les PDF
     └── Nord Deux Sèvres/
+        ├── V1-V2-Vcelle - *.pdf   # Conducteurs : plusieurs pupitres par PDF
         ├── Violon 1/
         ├── Violon 2/
         ├── Violon 3/
@@ -60,6 +61,32 @@ Le dernier cas crée un morceau en double, parce que seul « , basse » est reti
 Si un morceau apparaît deux fois sur le site, c'est presque toujours ça : corrigez
 le **nom du fichier**, pas le JSON — une fusion faite à la main dans
 `partitions.json` est défaite à la prochaine régénération.
+
+### Ajouter un conducteur (plusieurs pupitres dans un seul PDF)
+
+Certains PDF contiennent plusieurs parties sur la même partition. Ils ne vont pas
+dans un dossier d'instrument : posez-les **à la racine** de la collection
+(`partitions/Nord Deux Sèvres/`) et listez les pupitres en préfixe du nom, suivis
+de ` - ` :
+
+```
+partitions/Nord Deux Sèvres/V1-V2-Vcelle - Allein zu dir, Herr Jesu Christ.pdf
+```
+
+Ce morceau apparaîtra sous **Violon 1**, **Violon 2** et **Violoncelle 1** à la
+fois, chaque bouton téléchargeant ce même PDF. Le titre est ce qui suit ` - `.
+
+Codes reconnus : `V1`, `V2`, `V3`, `Vcelle` (= Violoncelle 1), `Vcelle1`,
+`Vcelle2`. La casse n'importe pas.
+
+Si un PDF n'est ni dans un dossier d'instrument ni nommé selon cette convention,
+`generate_json.py` le **signale** au lieu de l'ignorer en silence :
+
+```
+⚠ PDF ignored - no instrument found (wrong folder, or missing
+  "V1-V2-Vcelle - " prefix for a combined score):
+    - Nord Deux Sèvres/Mon fichier.pdf
+```
 
 ### Renseigner les années de jeu
 
@@ -122,4 +149,4 @@ Le site fonctionne avec tous les navigateurs modernes :
 
 ## Nombre de morceaux
 
-Actuellement : **15 morceaux** dans la bibliothèque
+Actuellement : **18 morceaux** dans la bibliothèque
