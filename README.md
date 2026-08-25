@@ -46,6 +46,21 @@ python3 generate_json.py
 
 3. Rechargez la page dans votre navigateur
 
+**Le titre du morceau est déduit du nom de fichier.** `generate_json.py` retire
+la mention d'instrument seulement si elle est **à la fin** du nom. Deux fichiers
+donnent donc le même morceau tant qu'il ne reste que le titre après nettoyage :
+
+| Nom de fichier                            | Titre obtenu           |
+| ----------------------------------------- | ---------------------- |
+| `Mendelssohn-Schumann violon 3.pdf`       | `Mendelssohn-Schumann` |
+| `Mendelssohn-Schumann violoncelle.pdf`    | `Mendelssohn-Schumann` |
+| `Mendelssohn-Schumann violoncelle, basse.pdf` | `Mendelssohn-Schumann violoncelle` ❌ |
+
+Le dernier cas crée un morceau en double, parce que seul « , basse » est retiré.
+Si un morceau apparaît deux fois sur le site, c'est presque toujours ça : corrigez
+le **nom du fichier**, pas le JSON — une fusion faite à la main dans
+`partitions.json` est défaite à la prochaine régénération.
+
 ### Renseigner les années de jeu
 
 Les années où un morceau est joué ne peuvent pas être déduites des fichiers PDF :
@@ -107,4 +122,4 @@ Le site fonctionne avec tous les navigateurs modernes :
 
 ## Nombre de morceaux
 
-Actuellement : **16 morceaux** dans la bibliothèque
+Actuellement : **15 morceaux** dans la bibliothèque

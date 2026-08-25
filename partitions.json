@@ -2,12 +2,14 @@
   "morceaux": [
     {
       "titre": "Americal patrol",
+      "annees": [2024, 2025, 2026],
       "instruments": {
         "violon3": "partitions/Nord Deux Sèvres/Violon 3/Americal patrol, violon 3.pdf"
       }
     },
     {
       "titre": "Bohemian Rhapsody",
+      "annees": [2026],
       "instruments": {
         "violon1": "partitions/Nord Deux Sèvres/Violon 1/Bohemian Rhapsody, violon 1.pdf",
         "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Bohemian Rhapsody, violoncelle.pdf",
@@ -18,12 +20,14 @@
     },
     {
       "titre": "Canon de Pachelbel",
+      "annees": [2024, 2025, 2026],
       "instruments": {
         "violon3": "partitions/Nord Deux Sèvres/Violon 3/Canon de Pachelbel, violon 3.pdf"
       }
     },
     {
       "titre": "Coldlay classics",
+      "annees": [2026],
       "instruments": {
         "violon1": "partitions/Nord Deux Sèvres/Violon 1/coldlay classics, violon 1.pdf",
         "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/coldlay classics, violoncelle.pdf",
@@ -34,12 +38,14 @@
     },
     {
       "titre": "German Dance",
+      "annees": [2024, 2025],
       "instruments": {
         "violon3": "partitions/Nord Deux Sèvres/Violon 3/German Dance, violon 3.pdf"
       }
     },
     {
       "titre": "Highlights from harry Potter",
+      "annees": [2026],
       "instruments": {
         "violon1": "partitions/Nord Deux Sèvres/Violon 1/Highlights from harry Potter, violon 1.pdf",
         "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Highlights from harry Potter, violoncelle.pdf",
@@ -49,26 +55,24 @@
     },
     {
       "titre": "La surprise, haydn",
+      "annees": [2024, 2025],
       "instruments": {
         "violon3": "partitions/Nord Deux Sèvres/Violon 3/La surprise, haydn, violon 3.pdf"
       }
     },
     {
       "titre": "Mendelssohn-Schumann",
+      "annees": [2024],
       "instruments": {
         "violon1": "partitions/Nord Deux Sèvres/Violon 1/Mendelssohn-Schumann violon 1.pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Mendelssohn-Schumann violoncelle.pdf",
         "violon2": "partitions/Nord Deux Sèvres/Violon 2/Mendelssohn-Schumann violon 2.pdf",
         "violon3": "partitions/Nord Deux Sèvres/Violon 3/Mendelssohn-Schumann violon 3.pdf"
       }
     },
     {
-      "titre": "Mendelssohn-Schumann violoncelle",
-      "instruments": {
-        "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Mendelssohn-Schumann violoncelle, basse.pdf"
-      }
-    },
-    {
       "titre": "Mission impossible",
+      "annees": [2026],
       "instruments": {
         "violon1": "partitions/Nord Deux Sèvres/Violon 1/Mission impossible, violon 1.pdf",
         "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Mission impossible, violoncelle.pdf",
@@ -79,6 +83,7 @@
     },
     {
       "titre": "Morceaux de Schubert",
+      "annees": [2025, 2026],
       "instruments": {
         "violon1": "partitions/Nord Deux Sèvres/Violon 1/Morceaux de Schubert,violon1.pdf",
         "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/morceaux de Schubert, cello.pdf",
@@ -88,6 +93,7 @@
     },
     {
       "titre": "Pirates des Caraïbes",
+      "annees": [2024, 2025, 2026],
       "instruments": {
         "violon1": "partitions/Nord Deux Sèvres/Violon 1/pirates des Caraïbes, violon 1.pdf",
         "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/pirates des Caraïbes, violoncelle.pdf",
@@ -97,6 +103,7 @@
     },
     {
       "titre": "Purcell, With drooping wings",
+      "annees": [2024, 2025, 2026],
       "instruments": {
         "violon1": "partitions/Nord Deux Sèvres/Violon 1/Purcell, With drooping wings.pdf",
         "violoncelle1": "partitions/Nord Deux Sèvres/Violoncelle 1/Purcell, With drooping wings.pdf",
@@ -106,12 +113,14 @@
     },
     {
       "titre": "Raindrops",
+      "annees": [2024, 2025, 2026],
       "instruments": {
         "violon3": "partitions/Nord Deux Sèvres/Violon 3/Raindrops, violon 3.pdf"
       }
     },
     {
       "titre": "Suite en sol, Purcell",
+      "annees": [2024, 2025, 2026],
       "instruments": {
         "violon3": "partitions/Nord Deux Sèvres/Violon 3/Suite en sol, Purcell, violon 3.pdf"
       }
