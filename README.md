@@ -31,7 +31,7 @@ Ouvrez simplement le fichier `index.html` dans votre navigateur web.
 
 1. **Recherche** : Utilisez la barre de recherche pour trouver un morceau par son titre
 2. **Filtres** : Cliquez sur un instrument pour voir uniquement les morceaux disponibles pour cet instrument
-3. **Filtre par année** : Cliquez sur une année pour ne voir que le répertoire joué cette année-là
+3. **Filtre par année scolaire** : Cliquez sur une année scolaire (ex. `2026/2027`) pour ne voir que le répertoire joué cette saison-là
 4. **Téléchargement** : Cliquez sur le bouton d'un instrument pour télécharger la partition PDF
 
 ### Ajouter de nouvelles partitions
@@ -51,6 +51,17 @@ python3 generate_json.py
 Les années où un morceau est joué ne peuvent pas être déduites des fichiers PDF :
 elles sont saisies à la main dans `partitions.json`, via un champ optionnel `annees`.
 
+Ce sont des **années scolaires**. On saisit un seul nombre, l'année de **début** ;
+le site affiche l'année scolaire complète :
+
+| Saisi dans le JSON | Affiché sur le site |
+| ------------------ | ------------------- |
+| `2024`             | `2024/2025`         |
+| `2025`             | `2025/2026`         |
+| `2026`             | `2026/2027`         |
+
+Autrement dit, la saison qui commence en septembre 2026 se note `2026`.
+
 ```json
 {
   "titre": "Volontary and march",
@@ -61,10 +72,11 @@ elles sont saisies à la main dans `partitions.json`, via un champ optionnel `an
 }
 ```
 
-- Un morceau joué une seule fois n'a qu'une année : `"annees": [2024]`
+- Un morceau joué une seule saison n'a qu'une année : `"annees": [2024]`, affichée `2024/2025`
 - Un morceau sans champ `annees` n'apparaît que sous « Toutes les années »
 - Les boutons d'années du site sont générés à partir des années présentes dans
   le fichier : la ligne de filtres disparaît si aucun morceau n'a d'année
+- Les liens de partage utilisent l'année de début (`?annee=2024`), pas la forme affichée
 
 `generate_json.py` relit le `partitions.json` existant et **reporte les années**
 à chaque régénération, donc ajouter des PDF ne les efface pas. Si un morceau est

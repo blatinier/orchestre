@@ -40,6 +40,11 @@ async function loadPartitions() {
     }
 }
 
+// A year stored in partitions.json is the start of a school year: 2024 -> "2024/2025"
+function formatSchoolYear(annee) {
+    return `${annee}/${annee + 1}`;
+}
+
 // Collect every year present in the data, most recent first
 function getAvailableYears() {
     const years = new Set();
@@ -69,7 +74,7 @@ function buildYearFilter() {
     buttons.innerHTML = [
         `<button class="filter-btn${currentYear === 'all' ? ' active' : ''}" data-year="all">Toutes</button>`,
         ...years.map(annee =>
-            `<button class="filter-btn${currentYear === annee ? ' active' : ''}" data-year="${annee}">${annee}</button>`
+            `<button class="filter-btn${currentYear === annee ? ' active' : ''}" data-year="${annee}">${formatSchoolYear(annee)}</button>`
         )
     ].join('');
 }
@@ -133,7 +138,7 @@ function createYearBadges(piece) {
 
     const badges = [...annees]
         .sort((a, b) => a - b)
-        .map(annee => `<span class="year-badge">${annee}</span>`)
+        .map(annee => `<span class="year-badge">${formatSchoolYear(annee)}</span>`)
         .join('');
 
     return `<div class="piece-years">${badges}</div>`;
