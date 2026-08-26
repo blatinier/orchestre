@@ -1,27 +1,30 @@
 {
   "morceaux": [
     {
-      "titre": "13-Allein Gott in der Höh_ sei Ehr_ Bach",
+      "titre": "13 - Allein Gott in der Höh' sei Ehr' (Bach)",
+      "annees": [2024],
       "instruments": {
-        "violon1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 13-Allein Gott in der Höh_ sei Ehr_ Bach.pdf",
-        "violon2": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 13-Allein Gott in der Höh_ sei Ehr_ Bach.pdf",
-        "violoncelle1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 13-Allein Gott in der Höh_ sei Ehr_ Bach.pdf"
+        "violon1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 13 - Allein Gott in der Höh' sei Ehr' (Bach).pdf",
+        "violon2": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 13 - Allein Gott in der Höh' sei Ehr' (Bach).pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 13 - Allein Gott in der Höh' sei Ehr' (Bach).pdf"
       }
     },
     {
-      "titre": "15-Allein zu dir, Herr Jesu Christ Bach",
+      "titre": "15 - Allein zu dir, Herr Jesu Christ (Bach)",
+      "annees": [2024],
       "instruments": {
-        "violon1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 15-Allein zu dir, Herr Jesu Christ Bach.pdf",
-        "violon2": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 15-Allein zu dir, Herr Jesu Christ Bach.pdf",
-        "violoncelle1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 15-Allein zu dir, Herr Jesu Christ Bach.pdf"
+        "violon1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 15 - Allein zu dir, Herr Jesu Christ (Bach).pdf",
+        "violon2": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 15 - Allein zu dir, Herr Jesu Christ (Bach).pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 15 - Allein zu dir, Herr Jesu Christ (Bach).pdf"
       }
     },
     {
-      "titre": "64-Bach 259-Ach, was soll ich Sünder machen",
+      "titre": "64 - Ach, was soll ich Sünder machen (Bach 259)",
+      "annees": [2024],
       "instruments": {
-        "violon1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 64-Bach 259-Ach, was soll ich Sünder machen.pdf",
-        "violon2": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 64-Bach 259-Ach, was soll ich Sünder machen.pdf",
-        "violoncelle1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 64-Bach 259-Ach, was soll ich Sünder machen.pdf"
+        "violon1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 64 - Ach, was soll ich Sünder machen (Bach 259).pdf",
+        "violon2": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 64 - Ach, was soll ich Sünder machen (Bach 259).pdf",
+        "violoncelle1": "partitions/Nord Deux Sèvres/V1-V2-Vcelle - 64 - Ach, was soll ich Sünder machen (Bach 259).pdf"
       }
     },
     {
