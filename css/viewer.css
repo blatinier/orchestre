@@ -184,3 +184,82 @@ body {
 .message a {
     color: var(--accent);
 }
+
+/* Annotate mode: signs and selection capture the finger, the scroll tool lets it scroll */
+.annotation-active:not(.outil-defiler) .page {
+    touch-action: none;
+    cursor: crosshair;
+}
+
+.palette {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background: white;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
+    padding: 6px 8px 10px;
+}
+
+.palette[hidden] {
+    display: none;
+}
+
+.palette-onglets,
+.palette-outils,
+.palette-actions {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 4px 0;
+}
+
+.palette-onglets button {
+    flex-shrink: 0;
+    padding: 4px 12px;
+    border: none;
+    border-radius: 14px;
+    background: #f1ece4;
+    font: 1rem 'Crimson Text', serif;
+    cursor: pointer;
+}
+
+.palette .palette-onglets button.actif {
+    background: var(--accent);
+    color: white;
+}
+
+.palette button.outil,
+.palette-actions > button,
+.tailles button {
+    flex-shrink: 0;
+    min-width: 44px;
+    height: 44px;
+    border: 2px solid #dfe6e9;
+    border-radius: 10px;
+    background: white;
+    color: var(--perso);
+    font: 600 1.1rem 'Crimson Text', serif;
+    cursor: pointer;
+}
+
+.palette button.outil[hidden] {
+    display: none;
+}
+
+.palette button.actif {
+    border-color: var(--accent);
+    background: #fff4e6;
+}
+
+.palette button:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+.tailles {
+    display: flex;
+    gap: 2px;
+    margin: 0 8px;
+}

@@ -5,7 +5,8 @@ import {
     cheminPdfValide, urlDepuisChemin, cheminOfficiel, lireDocument,
     chargerPersonnel, sauverPersonnel, Calque
 } from './annotations/store.js';
-import { rendreAnnotation, LARGEUR_REFERENCE } from './annotations/symboles.js';
+import { rendreAnnotation, apercuOutil, LARGEUR_REFERENCE, ONGLETS, OUTILS } from './annotations/symboles.js';
+import { Editeur } from './annotations/editeur.js';
 
 const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38';
 const ZOOM_MIN = 0.5;
@@ -231,6 +232,118 @@ function changerZoom(facteur) {
     appliquerZoom();
 }
 
+// ---- Annotate mode ----
+
+// Pointer position relative to a page (to page `num` when given, so a gesture
+// keeps its page even when the finger slides off it)
+function localiser(event, num = null) {
+    const page = num
+        ? etat.pages[num - 1]
+        : etat.pages[Number(event.target.closest?.('.page')?.dataset.page) - 1];
+    if (!page) return null;
+
+    const rect = page.element.getBoundingClientRect();
+    return {
+        num: page.num,
+        x: (event.clientX - rect.left) / rect.width,
+        y: (event.clientY - rect.top) / rect.height,
+        ratio: page.ratio
+    };
+}
+
+function afficherOnglet(id) {
+    document.querySelectorAll('#onglets [data-onglet]').forEach(bouton => {
+        bouton.classList.toggle('actif', bouton.dataset.onglet === id);
+        bouton.setAttribute('aria-selected', String(bouton.dataset.onglet === id));
+    });
+    document.querySelectorAll('#outils [data-outil]').forEach(bouton => {
+        bouton.hidden = bouton.dataset.onglet !== id;
+    });
+}
+
+function majPalette() {
+    const editeur = etat.editeur;
+    document.querySelectorAll('#palette [data-outil]').forEach(bouton => {
+        bouton.classList.toggle('actif', bouton.dataset.outil === editeur.outil);
+    });
+    document.querySelectorAll('#tailles [data-taille]').forEach(bouton => {
+        bouton.classList.toggle('actif', bouton.dataset.taille === editeur.taille);
+    });
+    document.getElementById('annuler').disabled = !etat.calque.peutAnnuler;
+    document.getElementById('retablir').disabled = !etat.calque.peutRetablir;
+    document.getElementById('supprimer').disabled = !editeur.selectionId;
+    document.body.classList.toggle('outil-defiler', editeur.outil === 'defiler');
+}
+
+function installerEditeur() {
+    etat.editeur = new Editeur({
+        calque: etat.calque,
+        localiser,
+        redessiner: num => (num ? redessinerCalques(num) : redessinerTout()),
+        enregistrer,
+        surEtat: majPalette
+    });
+
+    document.getElementById('onglets').innerHTML = ONGLETS
+        .map(o => `<button role="tab" data-onglet="${o.id}">${o.libelle}</button>`)
+        .join('');
+    document.getElementById('outils').innerHTML = OUTILS
+        .map(o => `<button class="outil" data-outil="${o.id}" data-onglet="${o.onglet}" title="${o.libelle}" aria-label="${o.libelle}">${apercuOutil(o)}</button>`)
+        .join('');
+    afficherOnglet(ONGLETS[0].id);
+
+    document.getElementById('onglets').addEventListener('click', e => {
+        const bouton = e.target.closest('[data-onglet]');
+        if (bouton) afficherOnglet(bouton.dataset.onglet);
+    });
+    document.getElementById('palette').addEventListener('click', e => {
+        const outil = e.target.closest('[data-outil]');
+        const taille = e.target.closest('[data-taille]');
+        if (outil) etat.editeur.choisirOutil(outil.dataset.outil);
+        if (taille) etat.editeur.choisirTaille(taille.dataset.taille);
+    });
+    document.getElementById('annuler').addEventListener('click', () => etat.editeur.annuler());
+    document.getElementById('retablir').addEventListener('click', () => etat.editeur.retablir());
+    document.getElementById('supprimer').addEventListener('click', () => etat.editeur.supprimerSelection());
+
+    const basculer = document.getElementById('basculerAnnoter');
+    basculer.addEventListener('click', () => {
+        const actif = !etat.editeur.actif;
+        basculer.setAttribute('aria-pressed', String(actif));
+        document.getElementById('palette').hidden = !actif;
+        document.body.classList.toggle('annotation-active', actif);
+        // Editing an invisible layer would be confusing
+        if (actif) {
+            document.getElementById('voirPerso').checked = true;
+            document.body.classList.remove('masquer-perso');
+        }
+        etat.editeur.activer(actif);
+    });
+
+    const pages = document.getElementById('pages');
+    pages.addEventListener('pointerdown', e => etat.editeur.pointerDown(e));
+    pages.addEventListener('pointermove', e => etat.editeur.pointerMove(e));
+    pages.addEventListener('pointerup', e => etat.editeur.pointerUp(e));
+    pages.addEventListener('pointercancel', e => etat.editeur.pointerCancel(e));
+
+    document.addEventListener('keydown', e => {
+        if (!etat.editeur.actif || e.target.closest?.('input, textarea')) return;
+        const commande = e.ctrlKey || e.metaKey;
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+            e.preventDefault();
+            etat.editeur.supprimerSelection();
+        } else if (commande && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+            e.preventDefault();
+            etat.editeur.annuler();
+        } else if (commande && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) {
+            e.preventDefault();
+            etat.editeur.retablir();
+        }
+    });
+
+    majPalette();
+}
+
 // ---- Controls ----
 
 function installerControles() {
@@ -276,6 +389,7 @@ async function ouvrir() {
     document.getElementById('telecharger').href = url;
 
     chargerCalquePerso();
+    installerEditeur();
 
     try {
         const pdfjs = await import(`${PDFJS}/pdf.min.mjs`);
