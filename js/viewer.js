@@ -2,7 +2,7 @@
 // (LARGEUR_REFERENCE units wide) shows the official and personal annotations.
 
 import {
-    cheminPdfValide, urlDepuisChemin, cheminOfficiel, lireDocument,
+    cheminPdfValide, urlDepuisChemin, cheminOfficiel, lireDocument, serialiser,
     chargerPersonnel, sauverPersonnel, Calque
 } from './annotations/store.js';
 import { rendreAnnotation, apercuOutil, LARGEUR_REFERENCE, ONGLETS, OUTILS } from './annotations/symboles.js';
@@ -344,6 +344,102 @@ function installerEditeur() {
     majPalette();
 }
 
+// ---- Menu: export / import / clear ----
+
+function nomFichierAnnotations() {
+    return etat.cheminPdf.split('/').pop().replace(/\.pdf$/i, '.json');
+}
+
+function exporter() {
+    const blob = new Blob([serialiser(etat.cheminPdf, etat.calque.annotations)], { type: 'application/json' });
+    const lien = document.createElement('a');
+    lien.href = URL.createObjectURL(blob);
+    lien.download = nomFichierAnnotations();
+    document.body.append(lien);
+    lien.click();
+    lien.remove();
+    setTimeout(() => URL.revokeObjectURL(lien.href), 1000);
+}
+
+function apresRemplacement() {
+    etat.editeur.selectionId = null;
+    enregistrer();
+    redessinerTout();
+    majPalette();
+}
+
+async function importer(fichier) {
+    let doc;
+    try {
+        doc = lireDocument(await fichier.text());
+    } catch (erreur) {
+        alert(`Import impossible : ${erreur.message}.`);
+        return;
+    }
+
+    if (doc.pdf && doc.pdf !== etat.cheminPdf
+        && !confirm(`Ce fichier a été créé pour une autre partition :\n${doc.pdf}\n\nL'importer quand même ?`)) {
+        return;
+    }
+    const actuelles = etat.calque.annotations.length;
+    if (actuelles > 0
+        && !confirm(`Remplacer vos ${actuelles} annotation(s) par les ${doc.annotations.length} du fichier ?`)) {
+        return;
+    }
+
+    etat.calque.remplacer(doc.annotations);
+    apresRemplacement();
+    if (doc.rejetees) {
+        alert(`${doc.rejetees} annotation(s) illisible(s) ont été ignorées.`);
+    }
+}
+
+function effacer() {
+    const actuelles = etat.calque.annotations.length;
+    if (actuelles === 0) return;
+    if (!confirm(`Effacer vos ${actuelles} annotation(s) sur cette partition ?`)) return;
+    etat.calque.remplacer([]);
+    apresRemplacement();
+}
+
+function installerMenu() {
+    const bouton = document.getElementById('ouvrirMenu');
+    const liste = document.getElementById('menuListe');
+    const fichier = document.getElementById('fichierImport');
+
+    const fermer = () => {
+        liste.hidden = true;
+        bouton.setAttribute('aria-expanded', 'false');
+    };
+
+    bouton.addEventListener('click', e => {
+        e.stopPropagation();
+        liste.hidden = !liste.hidden;
+        bouton.setAttribute('aria-expanded', String(!liste.hidden));
+    });
+    document.addEventListener('click', e => {
+        if (!e.target.closest('.menu')) fermer();
+    });
+
+    document.getElementById('exporter').addEventListener('click', () => {
+        fermer();
+        exporter();
+    });
+    document.getElementById('importer').addEventListener('click', () => {
+        fermer();
+        fichier.click();
+    });
+    fichier.addEventListener('change', () => {
+        if (fichier.files[0]) importer(fichier.files[0]);
+        // Allow importing the same file again
+        fichier.value = '';
+    });
+    document.getElementById('effacer').addEventListener('click', () => {
+        fermer();
+        effacer();
+    });
+}
+
 // ---- Controls ----
 
 function installerControles() {
@@ -390,6 +486,7 @@ async function ouvrir() {
 
     chargerCalquePerso();
     installerEditeur();
+    installerMenu();
 
     try {
         const pdfjs = await import(`${PDFJS}/pdf.min.mjs`);
