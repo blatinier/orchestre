@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partition - Orchestre à Cordes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/viewer.css">
+</head>
+<body>
+    <header class="barre">
+        <a href="index.html" class="bouton" id="retour" title="Retour à la liste" aria-label="Retour à la liste">←</a>
+        <h1 id="titre" class="titre">Partition</h1>
+        <div class="barre-actions">
+            <button class="bouton" id="zoomMoins" title="Dézoomer" aria-label="Dézoomer">−</button>
+            <button class="bouton" id="zoomPlus" title="Zoomer" aria-label="Zoomer">+</button>
+            <a class="bouton" id="telecharger" title="Télécharger le PDF" download>⬇ PDF</a>
+            <button class="bouton" id="basculerAnnoter" aria-pressed="false" title="Annoter" aria-label="Annoter">✏️</button>
+            <div class="menu">
+                <button class="bouton" id="ouvrirMenu" aria-haspopup="true" aria-expanded="false" title="Plus d'options" aria-label="Plus d'options">⋯</button>
+                <div class="menu-liste" id="menuListe" hidden>
+                    <button id="exporter">Exporter mes annotations</button>
+                    <button id="importer">Importer des annotations</button>
+                    <button id="effacer">Tout effacer</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="calques">
+        <label><input type="checkbox" id="voirOfficiel" checked> <span class="pastille officiel"></span> Officielles</label>
+        <label><input type="checkbox" id="voirPerso" checked> <span class="pastille perso"></span> Mes annotations</label>
+    </div>
+
+    <div id="bandeau" class="bandeau" hidden></div>
+
+    <main id="pages" class="pages"></main>
+
+    <div id="palette" class="palette" hidden>
+        <div class="palette-onglets" id="onglets" role="tablist"></div>
+        <div class="palette-outils" id="outils"></div>
+        <div class="palette-actions">
+            <button class="outil" data-outil="defiler" title="Faire défiler" aria-label="Faire défiler">✋</button>
+            <button class="outil" data-outil="selection" title="Sélectionner / déplacer" aria-label="Sélectionner / déplacer">👆</button>
+            <div class="tailles" id="tailles">
+                <button data-taille="s" title="Petits signes">S</button>
+                <button data-taille="m" title="Signes moyens" class="actif">M</button>
+                <button data-taille="l" title="Grands signes">L</button>
+            </div>
+            <button id="annuler" title="Annuler" aria-label="Annuler" disabled>↶</button>
+            <button id="retablir" title="Rétablir" aria-label="Rétablir" disabled>↷</button>
+            <button id="supprimer" title="Supprimer le signe sélectionné" aria-label="Supprimer le signe sélectionné" disabled>🗑</button>
+        </div>
+    </div>
+
+    <input type="file" id="fichierImport" accept=".json,application/json" hidden>
+
+    <script type="module" src="js/viewer.js"></script>
+</body>
+</html>
