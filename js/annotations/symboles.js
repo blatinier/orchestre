@@ -174,10 +174,11 @@ export const OUTILS = Object.entries(SYMBOLES).flatMap(([type, symbole]) => {
 });
 
 export function rendreAnnotation(annotation, hauteur, { selectionnee = false } = {}) {
-    const symbole = SYMBOLES[annotation.type];
-    if (!symbole) {
+    // Own keys only: "constructor" or "__proto__" must not pass for a sign
+    if (!Object.hasOwn(SYMBOLES, annotation.type)) {
         return '';
     }
+    const symbole = SYMBOLES[annotation.type];
 
     const u = (TAILLES[annotation.taille] ?? TAILLES.m) * LARGEUR_REFERENCE;
     const debut = `<g data-id="${echapperXml(annotation.id ?? '')}"${selectionnee ? ' class="selectionnee"' : ''}`;

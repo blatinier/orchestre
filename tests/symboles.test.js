@@ -132,3 +132,9 @@ test('apercuOutil produit un svg pour chaque outil', () => {
         assert.match(apercuOutil(outil), /^<svg [^>]*viewBox="-3 -3 6 6"/, outil.id);
     }
 });
+
+test('un nom hérité d\'Object ne produit rien et ne plante pas', () => {
+    for (const type of ['constructor', '__proto__', 'toString']) {
+        assert.equal(rendreAnnotation({ id: 'x', page: 1, type, x1: 0, y1: 0, x2: 1, y2: 1 }, 1000), '', type);
+    }
+});

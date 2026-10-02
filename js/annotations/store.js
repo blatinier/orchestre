@@ -50,8 +50,9 @@ function estCoord(valeur) {
 export function validerAnnotation(brute) {
     if (!brute || typeof brute !== 'object') return null;
 
+    // Own keys only: "constructor" or "__proto__" must not pass for a sign
+    if (!Object.hasOwn(SYMBOLES, brute.type)) return null;
     const symbole = SYMBOLES[brute.type];
-    if (!symbole) return null;
     if (!Number.isInteger(brute.page) || brute.page < 1) return null;
 
     const propre = {

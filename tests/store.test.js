@@ -292,3 +292,9 @@ test('deplacer décale un signe étirable sans le déformer au bord', () => {
     assert.deepEqual(deplacer(liaison, 0.5, 0), { x1: 0.8, y1: 0.5, x2: 1, y2: 0.6 });
     assert.deepEqual(deplacer(liaison, 0, -0.9), { x1: 0.7, y1: 0, x2: 0.9, y2: 0.1 });
 });
+
+test('validerAnnotation rejette les noms hérités d\'Object (constructor, __proto__…)', () => {
+    for (const type of ['constructor', '__proto__', 'toString', 'hasOwnProperty']) {
+        assert.equal(validerAnnotation({ page: 1, type, x1: 0, y1: 0, x2: 1, y2: 1, x: 0.5, y: 0.5 }), null, type);
+    }
+});
