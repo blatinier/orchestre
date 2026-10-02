@@ -154,3 +154,123 @@ export function sauverPersonnel(stockage, cheminPdf, annotations) {
         return false;
     }
 }
+
+const HISTORIQUE_MAX = 100;
+
+// One editable layer with undo/redo. Every change replaces the array, so a
+// history step is simply the previous array.
+export class Calque {
+    #annotations;
+    #passe = [];
+    #futur = [];
+
+    constructor(annotations = []) {
+        this.#annotations = annotations.map(a => ({ ...a }));
+    }
+
+    // Read-only: change it through the methods below
+    get annotations() {
+        return this.#annotations;
+    }
+
+    get peutAnnuler() {
+        return this.#passe.length > 0;
+    }
+
+    get peutRetablir() {
+        return this.#futur.length > 0;
+    }
+
+    trouver(id) {
+        return this.#annotations.find(a => a.id === id);
+    }
+
+    #appliquer(nouvelles) {
+        this.#passe.push(this.#annotations);
+        if (this.#passe.length > HISTORIQUE_MAX) {
+            this.#passe.shift();
+        }
+        this.#futur = [];
+        this.#annotations = nouvelles;
+    }
+
+    ajouter(annotation) {
+        this.#appliquer([...this.#annotations, { ...annotation }]);
+    }
+
+    modifier(id, champs) {
+        if (!this.trouver(id)) return;
+        this.#appliquer(this.#annotations.map(a => (a.id === id ? { ...a, ...champs } : a)));
+    }
+
+    supprimer(id) {
+        if (!this.trouver(id)) return;
+        this.#appliquer(this.#annotations.filter(a => a.id !== id));
+    }
+
+    remplacer(annotations) {
+        this.#appliquer(annotations.map(a => ({ ...a })));
+    }
+
+    annuler() {
+        if (!this.peutAnnuler) return false;
+        this.#futur.push(this.#annotations);
+        this.#annotations = this.#passe.pop();
+        return true;
+    }
+
+    retablir() {
+        if (!this.peutRetablir) return false;
+        this.#passe.push(this.#annotations);
+        this.#annotations = this.#futur.pop();
+        return true;
+    }
+}
+
+function distanceSegment(px, py, ax, ay, bx, by) {
+    const dx = bx - ax;
+    const dy = by - ay;
+    const carre = dx * dx + dy * dy;
+    const t = carre === 0 ? 0 : borne(((px - ax) * dx + (py - ay) * dy) / carre, 0, 1);
+    return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+
+// `ratio` is page height / page width, so both axes are measured in page widths.
+// On a tie the sign placed last (drawn on top) wins.
+export function annotationProche(annotations, page, x, y, ratio, seuil) {
+    let meilleure = null;
+    let meilleureDistance = seuil;
+
+    for (const annotation of annotations) {
+        if (annotation.page !== page) continue;
+
+        const distance = 'x' in annotation
+            ? Math.hypot(annotation.x - x, (annotation.y - y) * ratio)
+            : distanceSegment(x, y * ratio, annotation.x1, annotation.y1 * ratio, annotation.x2, annotation.y2 * ratio);
+
+        if (distance <= meilleureDistance) {
+            meilleure = annotation;
+            meilleureDistance = distance;
+        }
+    }
+
+    return meilleure;
+}
+
+// Coordinates to merge into an annotation moved by (dx, dy); it never leaves the page,
+// and a stretched sign keeps its shape against the edge
+export function deplacer(annotation, dx, dy) {
+    if ('x' in annotation) {
+        return { x: arrondirCoord(annotation.x + dx), y: arrondirCoord(annotation.y + dy) };
+    }
+
+    const { x1, y1, x2, y2 } = annotation;
+    const ddx = borne(dx, -Math.min(x1, x2), 1 - Math.max(x1, x2));
+    const ddy = borne(dy, -Math.min(y1, y2), 1 - Math.max(y1, y2));
+    return {
+        x1: arrondirCoord(x1 + ddx),
+        y1: arrondirCoord(y1 + ddy),
+        x2: arrondirCoord(x2 + ddx),
+        y2: arrondirCoord(y2 + ddy)
+    };
+}

@@ -4,7 +4,8 @@ import {
     VERSION, PREFIXE_STOCKAGE, LONGUEUR_TEXTE_MAX,
     cheminPdfValide, urlDepuisChemin, cheminOfficiel, nouvelId, arrondirCoord,
     validerAnnotation, validerDocument, lireDocument, serialiser,
-    chargerPersonnel, sauverPersonnel
+    chargerPersonnel, sauverPersonnel,
+    Calque, annotationProche, deplacer
 } from '../js/annotations/store.js';
 
 const PDF = 'partitions/Nord Deux Sèvres/Violon 1/Bohemian Rhapsody, violon 1.pdf';
@@ -187,4 +188,107 @@ test('sauverPersonnel renvoie false si le stockage est absent ou plein', () => {
     assert.equal(sauverPersonnel(null, PDF, []), false);
     const plein = { setItem() { throw new Error('QuotaExceededError'); }, removeItem() {} };
     assert.equal(sauverPersonnel(plein, PDF, [{ id: 'a', page: 1, type: 'p', x: 0, y: 0 }]), false);
+});
+
+const A = { id: 'a', page: 1, type: 'tire', taille: 'm', x: 0.5, y: 0.5 };
+const B = { id: 'b', page: 1, type: 'p', taille: 'm', x: 0.2, y: 0.2 };
+
+test('Calque : ajouter, modifier, supprimer', () => {
+    const calque = new Calque([A]);
+    calque.ajouter(B);
+    assert.deepEqual(calque.annotations.map(a => a.id), ['a', 'b']);
+    calque.modifier('a', { x: 0.6 });
+    assert.equal(calque.trouver('a').x, 0.6);
+    calque.supprimer('a');
+    assert.deepEqual(calque.annotations.map(a => a.id), ['b']);
+});
+
+test('Calque : ne garde pas de référence aux objets fournis', () => {
+    const source = { ...A };
+    const calque = new Calque([source]);
+    source.x = 0.9;
+    assert.equal(calque.trouver('a').x, 0.5);
+});
+
+test('Calque : annuler et rétablir', () => {
+    const calque = new Calque([A]);
+    assert.equal(calque.peutAnnuler, false);
+    calque.ajouter(B);
+    calque.modifier('a', { x: 0.7 });
+    assert.equal(calque.annuler(), true);
+    assert.equal(calque.trouver('a').x, 0.5);
+    assert.equal(calque.annuler(), true);
+    assert.deepEqual(calque.annotations.map(a => a.id), ['a']);
+    assert.equal(calque.annuler(), false);
+    assert.equal(calque.retablir(), true);
+    assert.equal(calque.retablir(), true);
+    assert.equal(calque.trouver('a').x, 0.7);
+    assert.equal(calque.retablir(), false);
+});
+
+test('Calque : une nouvelle action efface le futur', () => {
+    const calque = new Calque();
+    calque.ajouter(A);
+    calque.annuler();
+    calque.ajouter(B);
+    assert.equal(calque.peutRetablir, false);
+    assert.deepEqual(calque.annotations.map(a => a.id), ['b']);
+});
+
+test('Calque : modifier ou supprimer un id inconnu ne crée pas d\'étape', () => {
+    const calque = new Calque([A]);
+    calque.modifier('zzz', { x: 0 });
+    calque.supprimer('zzz');
+    assert.equal(calque.peutAnnuler, false);
+});
+
+test('Calque : remplacer est annulable', () => {
+    const calque = new Calque([A]);
+    calque.remplacer([]);
+    assert.equal(calque.annotations.length, 0);
+    calque.annuler();
+    assert.deepEqual(calque.annotations.map(a => a.id), ['a']);
+});
+
+test('Calque : l\'historique est limité à 100 étapes', () => {
+    const calque = new Calque();
+    for (let i = 0; i < 150; i++) calque.ajouter({ ...A, id: `n${i}` });
+    let etapes = 0;
+    while (calque.annuler()) etapes++;
+    assert.equal(etapes, 100);
+});
+
+test('annotationProche trouve le signe le plus proche sur la bonne page', () => {
+    const liste = [A, B, { ...A, id: 'autrePage', page: 2 }];
+    assert.equal(annotationProche(liste, 1, 0.51, 0.5, 1.4, 0.03).id, 'a');
+    assert.equal(annotationProche(liste, 1, 0.8, 0.8, 1.4, 0.03), null);
+    assert.equal(annotationProche(liste, 2, 0.5, 0.5, 1.4, 0.03).id, 'autrePage');
+});
+
+test('annotationProche tient compte du ratio de la page en hauteur', () => {
+    // 0.02 de hauteur sur une page 1.5 fois plus haute que large = 0.03 de largeur
+    assert.equal(annotationProche([A], 1, 0.5, 0.52, 1.5, 0.025), null);
+    assert.equal(annotationProche([A], 1, 0.5, 0.52, 1.5, 0.035).id, 'a');
+});
+
+test('annotationProche mesure la distance au segment d\'un signe étirable', () => {
+    const liaison = { id: 'l', page: 1, type: 'liaison', x1: 0.2, y1: 0.5, x2: 0.6, y2: 0.5 };
+    assert.equal(annotationProche([liaison], 1, 0.4, 0.51, 1, 0.02).id, 'l');
+    assert.equal(annotationProche([liaison], 1, 0.7, 0.5, 1, 0.02), null);
+});
+
+test('annotationProche préfère le signe posé en dernier à égalité', () => {
+    const dessus = { ...A, id: 'dessus' };
+    assert.equal(annotationProche([A, dessus], 1, 0.5, 0.5, 1, 0.02).id, 'dessus');
+});
+
+test('deplacer décale un signe ponctuel et le garde sur la page', () => {
+    assert.deepEqual(deplacer(A, 0.1, -0.2), { x: 0.6, y: 0.3 });
+    assert.deepEqual(deplacer(A, 0.9, -0.9), { x: 1, y: 0 });
+});
+
+test('deplacer décale un signe étirable sans le déformer au bord', () => {
+    const liaison = { id: 'l', page: 1, type: 'liaison', x1: 0.7, y1: 0.5, x2: 0.9, y2: 0.6 };
+    assert.deepEqual(deplacer(liaison, 0.5, 0), { x1: 0.8, y1: 0.5, x2: 1, y2: 0.6 });
+    assert.deepEqual(deplacer(liaison, 0, -0.9), { x1: 0.7, y1: 0, x2: 0.9, y2: 0.1 });
 });
