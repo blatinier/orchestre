@@ -7,6 +7,7 @@ import {
 } from './annotations/store.js';
 import { rendreAnnotation, apercuOutil, LARGEUR_REFERENCE, ONGLETS, OUTILS } from './annotations/symboles.js';
 import { Editeur } from './annotations/editeur.js';
+import { echelleRendu } from './rendu.js';
 
 const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38';
 const ZOOM_MIN = 0.5;
@@ -15,6 +16,8 @@ const PAS_ZOOM = 1.25;
 const LARGEUR_MAX = 900;
 // Pages this close to the screen are rendered ahead of scrolling
 const MARGE_RENDU = 600;
+// Pages further than this from the screen give their canvas memory back
+const MARGE_LIBERATION = 3000;
 
 const etat = {
     cheminPdf: null,
@@ -167,7 +170,12 @@ async function rendrePage(page) {
     page.largeurRendue = largeur;
     page.tache?.cancel();
 
-    const echelle = (largeur / page.pdfPage.getViewport({ scale: 1 }).width) * (window.devicePixelRatio || 1);
+    const echelle = echelleRendu({
+        largeurCss: largeur,
+        largeurPdf: page.pdfPage.getViewport({ scale: 1 }).width,
+        ratio: page.ratio,
+        dpr: window.devicePixelRatio
+    });
     const vue = page.pdfPage.getViewport({ scale: echelle });
     page.canvas.width = Math.floor(vue.width);
     page.canvas.height = Math.floor(vue.height);
@@ -182,6 +190,14 @@ async function rendrePage(page) {
     }
 }
 
+// Tablets have little canvas memory: drop the bitmap, it is re-rendered when scrolled back to
+function liberer(page) {
+    page.tache?.cancel();
+    page.canvas.width = 0;
+    page.canvas.height = 0;
+    page.largeurRendue = 0;
+}
+
 function estProcheDeLaVue(page) {
     const rect = page.element.getBoundingClientRect();
     return rect.bottom > -MARGE_RENDU && rect.top < window.innerHeight + MARGE_RENDU;
@@ -194,6 +210,11 @@ async function preparerPages() {
             .filter(entree => entree.isIntersecting)
             .forEach(entree => rendrePage(etat.pages[Number(entree.target.dataset.page) - 1]));
     }, { rootMargin: `${MARGE_RENDU}px 0px` });
+    const liberation = new IntersectionObserver(entrees => {
+        entrees
+            .filter(entree => !entree.isIntersecting)
+            .forEach(entree => liberer(etat.pages[Number(entree.target.dataset.page) - 1]));
+    }, { rootMargin: `${MARGE_LIBERATION}px 0px` });
 
     for (let num = 1; num <= etat.pdf.numPages; num++) {
         const pdfPage = await etat.pdf.getPage(num);
@@ -215,6 +236,7 @@ async function preparerPages() {
         dimensionner(page);
         redessinerCalques(num);
         observateur.observe(element);
+        liberation.observe(element);
     }
 }
 
