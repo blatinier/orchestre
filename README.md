@@ -15,6 +15,7 @@ orchestre/
 ├── js/
 │   ├── app.js             # Logique de la liste
 │   ├── viewer.js          # Visionneuse (PDF.js), palette, export/import
+│   ├── rendu.js           # Taille de rendu des pages (limite des tablettes)
 │   └── annotations/
 │       ├── symboles.js    # Catalogue des signes musicaux et leur dessin
 │       ├── store.js       # Format, validation, stockage, annuler/rétablir
