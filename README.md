@@ -6,12 +6,21 @@ Ce site web permet de consulter et télécharger les partitions de l'orchestre �
 
 ```
 orchestre/
-├── index.html              # Page principale
+├── index.html              # Liste des partitions
+├── viewer.html             # Visionneuse + annotations
 ├── partitions.json         # Données des partitions (généré automatiquement)
 ├── css/
-│   └── style.css          # Styles du site
+│   ├── style.css          # Styles de la liste
+│   └── viewer.css         # Styles de la visionneuse
 ├── js/
-│   └── app.js             # Logique JavaScript
+│   ├── app.js             # Logique de la liste
+│   ├── viewer.js          # Visionneuse (PDF.js), palette, export/import
+│   └── annotations/
+│       ├── symboles.js    # Catalogue des signes musicaux et leur dessin
+│       ├── store.js       # Format, validation, stockage, annuler/rétablir
+│       └── editeur.js     # Outils et gestes d'annotation
+├── annotations/           # Annotations officielles (.json), même arborescence que partitions/
+├── tests/                 # Tests (node --test)
 └── partitions/            # Dossier contenant tous les PDF
     └── Nord Deux Sèvres/
         ├── V1-V2-Vcelle - *.pdf   # Conducteurs : plusieurs pupitres par PDF
@@ -26,14 +35,23 @@ orchestre/
 
 ### Ouvrir le site
 
-Ouvrez simplement le fichier `index.html` dans votre navigateur web.
+Le site doit être servi par un petit serveur web (ouvrir `index.html` en double-cliquant
+ne permet pas de charger les partitions) :
+
+```bash
+cd ~/git/perso/orchestre
+python3 -m http.server 8000
+```
+
+puis ouvrez <http://localhost:8000> dans votre navigateur.
 
 ### Fonctionnalités
 
 1. **Recherche** : Utilisez la barre de recherche pour trouver un morceau par son titre
 2. **Filtres** : Cliquez sur un instrument pour voir uniquement les morceaux disponibles pour cet instrument
 3. **Filtre par année scolaire** : Cliquez sur une année scolaire (ex. `2026/2027`) pour ne voir que le répertoire joué cette saison-là
-4. **Téléchargement** : Cliquez sur le bouton d'un instrument pour télécharger la partition PDF
+4. **Lecture** : cliquez sur un instrument pour ouvrir la partition dans le site ; le bouton ⬇ télécharge le PDF
+5. **Annotations** : dans la visionneuse, ✏️ ouvre la palette des signes (voir ci-dessous)
 
 ### Ajouter de nouvelles partitions
 
@@ -130,6 +148,43 @@ renommé ou supprimé, le script prévient que ses années ont été perdues :
 ```
 
 Dans ce cas, remettez les années sur le nouveau titre à la main.
+
+### Annoter une partition
+
+Dans la visionneuse, le bouton ✏️ passe en mode **Annoter** et affiche la palette :
+
+- **Signes ponctuels** (tiré ⊓, poussé V, nuances, doigtés…) : choisissez-le, puis touchez la
+  partition. L'outil reste actif pour en poser plusieurs.
+- **Liaisons et soufflets** : glissez du point de départ au point d'arrivée.
+- ✋ fait défiler la partition sans rien poser ; 👆 sélectionne un signe pour le déplacer,
+  changer sa taille (S / M / L) ou le supprimer (🗑) ; ↶ / ↷ annulent et rétablissent.
+
+Vos annotations (en **rouge**) sont enregistrées **dans votre navigateur**, sur cet appareil
+seulement. Pour les sauvegarder ou les passer à quelqu'un : menu ⋯ → **Exporter mes
+annotations** (fichier `.json`), puis **Importer des annotations** sur l'autre appareil.
+
+### Publier des annotations officielles
+
+Les annotations officielles (en **bleu**, non modifiables) sont vues par tout le monde.
+Pour les publier :
+
+1. Annotez la partition dans la visionneuse, puis menu ⋯ → **Exporter mes annotations**
+2. Placez le fichier obtenu dans `annotations/`, en reproduisant le chemin du PDF :
+
+   | PDF | Fichier d'annotations officielles |
+   | --- | --- |
+   | `partitions/Nord Deux Sèvres/Violon 1/Bohemian Rhapsody, violon 1.pdf` | `annotations/Nord Deux Sèvres/Violon 1/Bohemian Rhapsody, violon 1.json` |
+
+3. Commitez le fichier : les annotations apparaissent pour tout le monde.
+
+Un conducteur (`V1-V2-Vcelle - …pdf`) n'a qu'un seul fichier d'annotations, partagé par
+tous les pupitres qui le lisent. Si un PDF est renommé, renommez aussi son `.json`.
+
+### Lancer les tests
+
+```bash
+npm test
+```
 
 ## Caractéristiques du design
 

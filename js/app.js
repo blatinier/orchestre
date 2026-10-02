@@ -144,6 +144,11 @@ function createYearBadges(piece) {
     return `<div class="piece-years">${badges}</div>`;
 }
 
+// Scores open in the in-site viewer; the raw PDF stays one click away
+function viewerUrl(path) {
+    return `viewer.html?pdf=${encodeURIComponent(path)}`;
+}
+
 // Create a piece card
 function createPieceCard(piece) {
     // If a specific instrument is selected, show only that instrument's download
@@ -160,8 +165,11 @@ function createPieceCard(piece) {
                 </div>
                 ${createYearBadges(piece)}
                 <div class="piece-actions">
-                    <a href="${path}" class="download-button" target="_blank" rel="noopener noreferrer">
-                        📄 Télécharger la partition
+                    <a href="${viewerUrl(path)}" class="download-button">
+                        🎼 Ouvrir la partition
+                    </a>
+                    <a href="${path}" class="share-button" download>
+                        ⬇ PDF
                     </a>
                     <button class="share-button" onclick="sharePiece('${piece.titre.replace(/'/g, "\\'")}', '${currentFilter}')">
                         🔗 Partager
@@ -175,11 +183,15 @@ function createPieceCard(piece) {
     const instrumentsHTML = Object.entries(piece.instruments)
         .map(([instrument, path]) => {
             const color = instrumentColors[instrument];
+            const name = instrumentNames[instrument] || instrument;
             return `
-                <a href="${path}" class="instrument-link" target="_blank" rel="noopener noreferrer" style="border-color: ${color}; color: ${color};">
-                    <span class="instrument-badge-inline" style="background-color: ${color};"></span>
-                    ${instrumentNames[instrument] || instrument}
-                </a>
+                <div class="instrument-item">
+                    <a href="${viewerUrl(path)}" class="instrument-link" style="border-color: ${color}; color: ${color};">
+                        <span class="instrument-badge-inline" style="background-color: ${color};"></span>
+                        ${name}
+                    </a>
+                    <a href="${path}" class="instrument-download" download title="Télécharger le PDF ${name}" aria-label="Télécharger le PDF ${name}" style="border-color: ${color}; color: ${color};">⬇</a>
+                </div>
             `;
         })
         .join('');

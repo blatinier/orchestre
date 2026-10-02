@@ -414,8 +414,39 @@ h1 {
 }
 
 .instrument-link::after {
-    content: ' 📄';
+    content: ' 🎼';
     margin-left: 8px;
+}
+
+.instrument-item {
+    display: flex;
+    gap: 6px;
+}
+
+.instrument-item .instrument-link {
+    flex: 1;
+}
+
+.instrument-download {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    background: white;
+    border: 2px solid;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: transform 0.2s ease;
+}
+
+.instrument-download:hover {
+    transform: scale(1.08);
+}
+
+/* The "⬇ PDF" link reuses the share button look */
+a.share-button {
+    text-decoration: none;
 }
 
 /* Empty State */
