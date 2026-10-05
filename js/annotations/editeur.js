@@ -194,6 +194,13 @@ export class Editeur {
     pointerCancel(event) {
         const geste = this.#geste;
         if (!geste || event.pointerId !== geste.pointerId) return;
+        this.annulerGeste();
+    }
+
+    // Drop the gesture in progress, e.g. when a second finger comes down to zoom
+    annulerGeste() {
+        const geste = this.#geste;
+        if (!geste) return;
         this.#geste = null;
         this.#redessiner(geste.num);
     }

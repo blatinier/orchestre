@@ -207,3 +207,14 @@ test('supprimer la sélection puis annuler la fait revenir', () => {
     editeur.retablir();
     assert.equal(calque.annotations.length, 0);
 });
+
+test('annulerGeste abandonne le signe en cours (second doigt posé pour zoomer)', () => {
+    const { editeur, calque } = creer();
+    editeur.choisirOutil('crescendo');
+    editeur.pointerDown(evenement(0.2, 0.5));
+    editeur.pointerMove(evenement(0.5, 0.5));
+    editeur.annulerGeste();
+    editeur.pointerUp(evenement(0.5, 0.5));
+    assert.equal(calque.annotations.length, 0);
+    assert.equal(editeur.vue(calque.annotations).annotations.length, 0);
+});

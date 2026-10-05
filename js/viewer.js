@@ -8,6 +8,7 @@ import {
 import { rendreAnnotation, apercuOutil, LARGEUR_REFERENCE, ONGLETS, OUTILS } from './annotations/symboles.js';
 import { Editeur } from './annotations/editeur.js';
 import { echelleRendu } from './rendu.js';
+import { mesurer, zoomApresPincement, defilementAncre } from './pincement.js';
 
 const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38';
 const ZOOM_MIN = 0.5;
@@ -266,6 +267,67 @@ function changerZoom(facteur) {
     appliquerZoom();
 }
 
+// ---- Pinch ----
+
+// Two fingers zoom the score itself, re-rendered sharp, instead of the browser
+// magnifying the whole page; one finger still scrolls natively
+function installerPincement() {
+    const conteneur = document.getElementById('pages');
+    let pincement = null;   // { depart, fin, rect }
+
+    const zoomVise = () => zoomApresPincement(etat.zoom, pincement.depart.distance, pincement.fin.distance, ZOOM_MIN, ZOOM_MAX);
+
+    conteneur.addEventListener('touchstart', e => {
+        if (e.touches.length !== 2) return;
+        e.preventDefault();
+        // The first finger may have started drawing a sign
+        etat.editeur?.annulerGeste();
+        const depart = mesurer(e.touches[0], e.touches[1]);
+        const rect = conteneur.getBoundingClientRect();
+        pincement = { depart, fin: depart, rect };
+        conteneur.style.transformOrigin = `${depart.centre.x - rect.left}px ${depart.centre.y - rect.top}px`;
+    }, { passive: false });
+
+    // Preview while pinching: scale the rendered pages, follow the fingers
+    conteneur.addEventListener('touchmove', e => {
+        if (!pincement || e.touches.length < 2) return;
+        e.preventDefault();
+        pincement.fin = mesurer(e.touches[0], e.touches[1]);
+        const facteur = zoomVise() / etat.zoom;
+        const dx = pincement.fin.centre.x - pincement.depart.centre.x;
+        const dy = pincement.fin.centre.y - pincement.depart.centre.y;
+        conteneur.style.transform = `translate(${dx}px, ${dy}px) scale(${facteur})`;
+    }, { passive: false });
+
+    // Fingers lifted: apply the zoom for real, keeping the pinched point under them
+    const terminer = e => {
+        if (!pincement || e.touches.length >= 2) return;
+        const { depart, fin, rect } = pincement;
+        const zoom = zoomVise();
+        pincement = null;
+        conteneur.style.transform = '';
+        conteneur.style.transformOrigin = '';
+        if (zoom === etat.zoom) return;
+
+        const haut = rect.top + window.scrollY;
+        const x = conteneur.scrollLeft + depart.centre.x - rect.left;
+        const y = depart.centre.y - rect.top;
+        const largeurAvant = largeurPage();
+        etat.zoom = zoom;
+        etat.pages.forEach(dimensionner);
+        const facteur = largeurPage() / largeurAvant;
+
+        window.scrollTo(window.scrollX, defilementAncre(y, facteur, fin.centre.y - haut));
+        conteneur.scrollLeft = defilementAncre(x, facteur, fin.centre.x - rect.left);
+        etat.pages.filter(estProcheDeLaVue).forEach(rendrePage);
+    };
+    conteneur.addEventListener('touchend', terminer);
+    conteneur.addEventListener('touchcancel', terminer);
+
+    // iOS Safari pinches through its own gesture events
+    document.addEventListener('gesturestart', e => e.preventDefault());
+}
+
 // ---- Annotate mode ----
 
 // Pointer position relative to a page (to page `num` when given, so a gesture
@@ -522,6 +584,7 @@ async function ouvrir() {
     chargerCalquePerso();
     installerEditeur();
     installerMenu();
+    installerPincement();
 
     try {
         const pdfjs = await import(`${PDFJS}/pdf.min.mjs`);

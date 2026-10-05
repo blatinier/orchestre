@@ -51,7 +51,8 @@ puis ouvrez <http://localhost:8000> dans votre navigateur.
 1. **Recherche** : Utilisez la barre de recherche pour trouver un morceau par son titre
 2. **Filtres** : Cliquez sur un instrument pour voir uniquement les morceaux disponibles pour cet instrument
 3. **Filtre par année scolaire** : Cliquez sur une année scolaire (ex. `2026/2027`) pour ne voir que le répertoire joué cette saison-là
-4. **Lecture** : cliquez sur un instrument pour ouvrir la partition dans le site ; le bouton ⬇ télécharge le PDF
+4. **Lecture** : cliquez sur un instrument pour ouvrir la partition dans le site ; le bouton ⬇ télécharge le PDF.
+   Zoomez avec + / − ou en pinçant à deux doigts sur tablette (la partition est redessinée nette)
 5. **Annotations** : dans la visionneuse, ✏️ ouvre la palette des signes (voir ci-dessous)
 
 ### Ajouter de nouvelles partitions
