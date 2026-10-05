@@ -20,15 +20,18 @@ export class Editeur {
     #redessiner;
     #enregistrer;
     #surEtat;
+    #demanderTexte;
     // { pointerId, num, mode: 'deplacer'|'poser'|'etirer', depart, courant, id?, outil? }
     #geste = null;
 
-    constructor({ calque, localiser, redessiner, enregistrer, surEtat }) {
+    // `demanderTexte(question)` returns the typed text, or null when cancelled
+    constructor({ calque, localiser, redessiner, enregistrer, surEtat, demanderTexte = question => window.prompt(question) }) {
         this.#calque = calque;
         this.#localiser = localiser;
         this.#redessiner = redessiner;
         this.#enregistrer = enregistrer;
         this.#surEtat = surEtat;
+        this.#demanderTexte = demanderTexte;
     }
 
     activer(actif) {
@@ -168,7 +171,7 @@ export class Editeur {
         } else if (geste.mode === 'poser') {
             const annotation = this.#nouvellePonctuelle(geste);
             if (annotation.type === 'texte') {
-                const saisie = window.prompt('Texte à ajouter :');
+                const saisie = this.#demanderTexte('Texte à ajouter :');
                 annotation.texte = (saisie ?? '').trim().slice(0, LONGUEUR_TEXTE_MAX);
             }
             if (annotation.type !== 'texte' || annotation.texte) {
