@@ -141,6 +141,27 @@ body {
     font-size: 1rem;
 }
 
+.bandeau:not([hidden]) {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.bandeau-messages {
+    flex: 1;
+}
+
+.bandeau-fermer {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.08);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
 /* Pages */
 .pages {
     padding: 8px 8px 160px;

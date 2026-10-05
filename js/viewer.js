@@ -44,11 +44,16 @@ function obtenirStockage() {
 }
 
 function avertir(message) {
-    const bandeau = document.getElementById('bandeau');
     const ligne = document.createElement('p');
     ligne.textContent = message;
-    bandeau.append(ligne);
-    bandeau.hidden = false;
+    document.getElementById('bandeauMessages').append(ligne);
+    document.getElementById('bandeau').hidden = false;
+}
+
+// Closing forgets the messages: a later warning shows on its own
+function fermerBandeau() {
+    document.getElementById('bandeau').hidden = true;
+    document.getElementById('bandeauMessages').replaceChildren();
 }
 
 function afficherErreur(message, urlPdf) {
@@ -472,6 +477,7 @@ function installerMenu() {
 // ---- Controls ----
 
 function installerControles() {
+    document.getElementById('fermerBandeau').addEventListener('click', fermerBandeau);
     document.getElementById('zoomPlus').addEventListener('click', () => changerZoom(PAS_ZOOM));
     document.getElementById('zoomMoins').addEventListener('click', () => changerZoom(1 / PAS_ZOOM));
 
