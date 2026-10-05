@@ -149,10 +149,14 @@ export const SYMBOLES = {
     doigt_2: mot('doigtes', 'Doigt 2', '2', { taille: 1.8 }),
     doigt_3: mot('doigtes', 'Doigt 3', '3', { taille: 1.8 }),
     doigt_4: mot('doigtes', 'Doigt 4', '4', { taille: 1.8 }),
-    corde_1: mot('doigtes', 'Corde I (Mi)', 'I', { taille: 1.8 }),
-    corde_2: mot('doigtes', 'Corde II (La)', 'II', { taille: 1.8 }),
-    corde_3: mot('doigtes', 'Corde III (Ré)', 'III', { taille: 1.8 }),
-    corde_4: mot('doigtes', 'Corde IV (Sol)', 'IV', { taille: 1.8 }),
+    corde_1: mot('doigtes', 'Corde I (Mi au violon, La au violoncelle)', 'I', { taille: 1.8 }),
+    corde_2: mot('doigtes', 'Corde II (La au violon, Ré au violoncelle)', 'II', { taille: 1.8 }),
+    corde_3: mot('doigtes', 'Corde III (Ré au violon, Sol au violoncelle)', 'III', { taille: 1.8 }),
+    corde_4: mot('doigtes', 'Corde IV (Sol au violon, Do au violoncelle)', 'IV', { taille: 1.8 }),
+    // Cello thumb position: an open oval with a short stem below
+    pouce: ponctuel('doigtes', 'Pouce (violoncelle)', () =>
+        `<ellipse cx="0" cy="-0.35" rx="0.5" ry="0.6" ${TRAIT} stroke-width="0.22"/>`
+        + `<path d="M 0 0.25 V 1" ${TRAIT} stroke-width="0.22"/>`),
 
     // Repères
     lunettes: mot('reperes', 'Attention (lunettes)', '👓', { taille: 2.2 }),

@@ -12,7 +12,7 @@ const TYPES_ATTENDUS = [
     'liaison',
     'staccato', 'tenuto', 'accent', 'point_orgue', 'pizz', 'arco',
     'doigt_0', 'doigt_1', 'doigt_2', 'doigt_3', 'doigt_4',
-    'corde_1', 'corde_2', 'corde_3', 'corde_4',
+    'corde_1', 'corde_2', 'corde_3', 'corde_4', 'pouce',
     'lunettes', 'cesure', 'texte'
 ];
 
@@ -137,4 +137,14 @@ test('un nom hérité d\'Object ne produit rien et ne plante pas', () => {
     for (const type of ['constructor', '__proto__', 'toString']) {
         assert.equal(rendreAnnotation({ id: 'x', page: 1, type, x1: 0, y1: 0, x2: 1, y2: 1 }, 1000), '', type);
     }
+});
+
+test('le pouce est un doigté', () => {
+    assert.equal(SYMBOLES.pouce.onglet, 'doigtes');
+    assert.equal(SYMBOLES.pouce.nature, 'ponctuel');
+});
+
+test('les infobulles des cordes valent pour le violon et le violoncelle', () => {
+    assert.equal(SYMBOLES.corde_1.libelle, 'Corde I (Mi au violon, La au violoncelle)');
+    assert.equal(SYMBOLES.corde_4.libelle, 'Corde IV (Sol au violon, Do au violoncelle)');
 });
