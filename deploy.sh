@@ -13,8 +13,8 @@ set -euo pipefail
 
 PROJET="orchestre-thouars"
 # Everything the site needs; nothing else goes online
-FICHIERS_SITE=(index.html viewer.html css js images partitions partitions.json)
-FICHIERS_OPTIONNELS=(annotations)
+FICHIERS_SITE=(index.html viewer.html css js partitions partitions.json)
+FICHIERS_OPTIONNELS=(images annotations)
 NODE_MIN=22
 
 DRY_RUN=false

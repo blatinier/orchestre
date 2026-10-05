@@ -196,7 +196,7 @@ Le script :
 - refuse de partir s'il reste des modifications non commitées, ou hors de la branche `main` ;
 - lance les tests ;
 - n'envoie que les fichiers du site (`index.html`, `viewer.html`, `css/`, `js/`, `images/`,
-  `partitions/`, `partitions.json` et `annotations/`) — jamais `docs/`, `tests/`, `.claude/`… ;
+  `partitions/`, `partitions.json`, et `annotations/` s'il existe) — jamais `docs/`, `tests/`, `.claude/`… ;
 - bloque si un fichier ressemble à des données sensibles (`.env`, `.csv`, `.xlsx`, clés…) ;
 - affiche l'avertissement de publication publique et demande de taper « oui ».
 
