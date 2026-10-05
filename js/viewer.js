@@ -170,22 +170,25 @@ async function rendrePage(page) {
     page.largeurRendue = largeur;
     page.tache?.cancel();
 
-    const echelle = echelleRendu({
-        largeurCss: largeur,
-        largeurPdf: page.pdfPage.getViewport({ scale: 1 }).width,
-        ratio: page.ratio,
-        dpr: window.devicePixelRatio
-    });
-    const vue = page.pdfPage.getViewport({ scale: echelle });
-    page.canvas.width = Math.floor(vue.width);
-    page.canvas.height = Math.floor(vue.height);
-
-    page.tache = page.pdfPage.render({ canvasContext: page.canvas.getContext('2d'), viewport: vue });
     try {
+        const echelle = echelleRendu({
+            largeurCss: largeur,
+            largeurPdf: page.pdfPage.getViewport({ scale: 1 }).width,
+            ratio: page.ratio,
+            dpr: window.devicePixelRatio
+        });
+        const vue = page.pdfPage.getViewport({ scale: echelle });
+        page.canvas.width = Math.floor(vue.width);
+        page.canvas.height = Math.floor(vue.height);
+
+        page.tache = page.pdfPage.render({ canvasContext: page.canvas.getContext('2d'), viewport: vue });
         await page.tache.promise;
     } catch (erreur) {
-        if (erreur?.name !== 'RenderingCancelledException') {
-            console.error(`Page ${page.num} :`, erreur);
+        if (erreur?.name === 'RenderingCancelledException') return;
+        console.error(`Page ${page.num} :`, erreur);
+        // Not drawn: the next scroll, zoom or resize retries it
+        if (page.largeurRendue === largeur) {
+            page.largeurRendue = 0;
         }
     }
 }
