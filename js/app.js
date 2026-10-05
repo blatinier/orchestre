@@ -144,6 +144,11 @@ function createYearBadges(piece) {
     return `<div class="piece-years">${badges}</div>`;
 }
 
+// File names hold spaces, accents, commas, '#'...: encode each segment, keep the slashes
+function pdfUrl(path) {
+    return path.split('/').map(encodeURIComponent).join('/');
+}
+
 // Scores open in the in-site viewer; the raw PDF stays one click away
 function viewerUrl(path) {
     return `viewer.html?pdf=${encodeURIComponent(path)}`;
@@ -168,7 +173,7 @@ function createPieceCard(piece) {
                     <a href="${viewerUrl(path)}" class="download-button">
                         🎼 Ouvrir la partition
                     </a>
-                    <a href="${path}" class="share-button" download>
+                    <a href="${pdfUrl(path)}" class="share-button" download>
                         ⬇ PDF
                     </a>
                     <button class="share-button" onclick="sharePiece('${piece.titre.replace(/'/g, "\\'")}', '${currentFilter}')">
@@ -190,7 +195,7 @@ function createPieceCard(piece) {
                         <span class="instrument-badge-inline" style="background-color: ${color};"></span>
                         ${name}
                     </a>
-                    <a href="${path}" class="instrument-download" download title="Télécharger le PDF ${name}" aria-label="Télécharger le PDF ${name}" style="border-color: ${color}; color: ${color};">⬇</a>
+                    <a href="${pdfUrl(path)}" class="instrument-download" download title="Télécharger le PDF ${name}" aria-label="Télécharger le PDF ${name}" style="border-color: ${color}; color: ${color};">⬇</a>
                 </div>
             `;
         })
