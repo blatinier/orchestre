@@ -181,6 +181,28 @@ Pour les publier :
 Un conducteur (`V1-V2-Vcelle - …pdf`) n'a qu'un seul fichier d'annotations, partagé par
 tous les pupitres qui le lisent. Si un PDF est renommé, renommez aussi son `.json`.
 
+### Mettre le site en ligne
+
+Le site est hébergé sur Cloudflare Pages (<https://orchestre-thouars.pages.dev>).
+**Pousser sur GitHub ne met pas le site à jour** : il faut le déployer.
+
+```bash
+./deploy.sh --dry-run   # vérifie tout et montre ce qui partirait, sans rien envoyer
+./deploy.sh             # déploie (ou : npm run deploy)
+```
+
+Le script :
+
+- refuse de partir s'il reste des modifications non commitées, ou hors de la branche `main` ;
+- lance les tests ;
+- n'envoie que les fichiers du site (`index.html`, `viewer.html`, `css/`, `js/`, `images/`,
+  `partitions/`, `partitions.json` et `annotations/`) — jamais `docs/`, `tests/`, `.claude/`… ;
+- bloque si un fichier ressemble à des données sensibles (`.env`, `.csv`, `.xlsx`, clés…) ;
+- affiche l'avertissement de publication publique et demande de taper « oui ».
+
+Il faut Node 22 ou plus pour Wrangler (le script prend tout seul une version installée
+avec nvm) et être connecté à Cloudflare (`npx wrangler login` la première fois).
+
 ### Lancer les tests
 
 ```bash
