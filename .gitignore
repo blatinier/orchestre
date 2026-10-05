@@ -19,3 +19,6 @@ __pycache__/
 # Temporary files
 *.tmp
 *.bak
+
+# Wrangler cache (created by deploy.sh)
+.wrangler/
