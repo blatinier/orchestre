@@ -180,6 +180,8 @@ Pour les publier :
 
 Un conducteur (`V1-V2-Vcelle - …pdf`) n'a qu'un seul fichier d'annotations, partagé par
 tous les pupitres qui le lisent. Si un PDF est renommé, renommez aussi son `.json`.
+Les accents du nom peuvent être tapés librement : la visionneuse retrouve le fichier
+même si le nom du PDF les code autrement (cas de certains fichiers venus d'un Mac).
 
 ### Mettre le site en ligne
 

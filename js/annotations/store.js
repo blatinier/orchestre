@@ -29,6 +29,13 @@ export function cheminOfficiel(cheminPdf) {
     return DOSSIER_ANNOTATIONS + cheminPdf.slice(DOSSIER_PARTITIONS.length).replace(/\.pdf$/i, '.json');
 }
 
+// An accent can be one character (NFC, what a keyboard types) or a letter plus a
+// combining mark (NFD, what macOS file names often hold): try the path as given,
+// then the other form
+export function variantesUnicode(chemin) {
+    return [...new Set([chemin, chemin.normalize('NFC'), chemin.normalize('NFD')])];
+}
+
 export function nouvelId() {
     return 'a' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
 }

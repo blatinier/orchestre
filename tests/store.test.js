@@ -5,7 +5,7 @@ import {
     cheminPdfValide, urlDepuisChemin, cheminOfficiel, nouvelId, arrondirCoord,
     validerAnnotation, validerDocument, lireDocument, serialiser,
     chargerPersonnel, sauverPersonnel,
-    Calque, annotationProche, deplacer
+    Calque, annotationProche, deplacer, variantesUnicode
 } from '../js/annotations/store.js';
 
 const PDF = 'partitions/Nord Deux Sèvres/Violon 1/Bohemian Rhapsody, violon 1.pdf';
@@ -297,4 +297,15 @@ test('validerAnnotation rejette les noms hérités d\'Object (constructor, __pro
     for (const type of ['constructor', '__proto__', 'toString', 'hasOwnProperty']) {
         assert.equal(validerAnnotation({ page: 1, type, x1: 0, y1: 0, x2: 1, y2: 1, x: 0.5, y: 0.5 }), null, type);
     }
+});
+
+test('variantesUnicode essaie d\'abord le chemin tel quel, puis l\'autre forme des accents', () => {
+    const nfd = 'annotations/Violon 1/pirates des Carai\u0308bes.json';
+    const nfc = 'annotations/Violon 1/pirates des Cara\u00efbes.json';
+    assert.deepEqual(variantesUnicode(nfd), [nfd, nfc]);
+    assert.deepEqual(variantesUnicode(nfc), [nfc, nfd]);
+});
+
+test('variantesUnicode ne répète pas un chemin sans accent', () => {
+    assert.deepEqual(variantesUnicode('annotations/a/B.json'), ['annotations/a/B.json']);
 });

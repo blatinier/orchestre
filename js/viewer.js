@@ -2,7 +2,7 @@
 // (LARGEUR_REFERENCE units wide) shows the official and personal annotations.
 
 import {
-    cheminPdfValide, urlDepuisChemin, cheminOfficiel, lireDocument, serialiser,
+    cheminPdfValide, urlDepuisChemin, cheminOfficiel, variantesUnicode, lireDocument, serialiser,
     chargerPersonnel, sauverPersonnel, Calque
 } from './annotations/store.js';
 import { rendreAnnotation, apercuOutil, LARGEUR_REFERENCE, ONGLETS, OUTILS } from './annotations/symboles.js';
@@ -124,7 +124,11 @@ function enregistrer() {
 async function chargerOfficielles() {
     let reponse;
     try {
-        reponse = await fetch(urlDepuisChemin(cheminOfficiel(etat.cheminPdf)), { cache: 'no-cache' });
+        // The .json may have been named with the other form of the accents than the PDF
+        for (const chemin of variantesUnicode(cheminOfficiel(etat.cheminPdf))) {
+            reponse = await fetch(urlDepuisChemin(chemin), { cache: 'no-cache' });
+            if (reponse.status !== 404) break;
+        }
     } catch (erreur) {
         console.warn('Annotations officielles indisponibles :', erreur);
         return;
